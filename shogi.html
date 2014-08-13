@@ -4,108 +4,118 @@
 <title>将棋盤テスト</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<link rel="stylesheet" href="js/jquery-ui.css">
-<link rel="stylesheet" href="css/shogi.css" type="test/css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" /><link rel="stylesheet" href="css/shogi.css" type="test/css" />
 
-<script src="js/jquery-1.11.1.js"></script>
-<script src="js/jquery-ui.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
 <script src="js/shogi.js"></script>
+<script src="js/interface.js"></script>
+<!--
+<script src="js/define.js"></script>
+<script src="js/api.js"></script>
+<script src="js/movable.js"></script>
+<script src="js/move.js"></script>
+<script src="js/change.js"></script>
+-->
 </head>
 <body>
-<h1>将棋ばんつくるよ！</h1>
+<h1>将棋盤つくるよ！</h1>
 
 <div class="board" >
-	<div class="piece_area x9 y1 " id="area_91" > </div>
-	<div class="piece_area x8 y1" id="area_81" > </div>
-	<div class="piece_area x7 y1" id="area_71" ></div>
-	<div class="piece_area x6 y1" id="area_61" > </div>
-	<div class="piece_area x5 y1" id="area_51" > </div>
-	<div class="piece_area x4 y1" id="area_41" > </div>
-	<div class="piece_area x3 y1" id="area_31" > </div>
-	<div class="piece_area x2 y1" id="area_21" > </div>
-	<div class="piece_area x1 y1" id="area_11" > </div>
+	<div class="piece_area x9 y1" id="pos_91" > <div class="piece"></div></div>
+	<div class="piece_area x8 y1" id="pos_81" > <div class="piece"></div></div>
+	<div class="piece_area x7 y1" id="pos_71" > <div class="piece"></div></div>
+	<div class="piece_area x6 y1" id="pos_61" > <div class="piece"></div></div>
+	<div class="piece_area x5 y1" id="pos_51" > <div class="piece"></div></div>
+	<div class="piece_area x4 y1" id="pos_41" > <div class="piece"></div></div>
+	<div class="piece_area x3 y1" id="pos_31" > <div class="piece"></div></div>
+	<div class="piece_area x2 y1" id="pos_21" > <div class="piece"></div></div>
+	<div class="piece_area x1 y1" id="pos_11" > <div class="piece"></div></div>
 
-	<div class="piece_area x9 y2" id="area_92" > </div>
-	<div class="piece_area x8 y2" id="area_82" > </div>
-	<div class="piece_area x7 y2" id="area_72" > </div>
-	<div class="piece_area x6 y2" id="area_62" > </div>
-	<div class="piece_area x5 y2" id="area_52" > </div>
-	<div class="piece_area x4 y2" id="area_42" > </div>
-	<div class="piece_area x3 y2" id="area_32" > </div>
-	<div class="piece_area x2 y2" id="area_22" > </div>
-	<div class="piece_area x1 y2" id="area_12" > </div>
+	<div class="piece_area x9 y2" id="pos_92" > </div>
+	<div class="piece_area x8 y2" id="pos_82" > <div class="piece"></div></div>
+	<div class="piece_area x7 y2" id="pos_72" > </div>
+	<div class="piece_area x6 y2" id="pos_62" > </div>
+	<div class="piece_area x5 y2" id="pos_52" > </div>
+	<div class="piece_area x4 y2" id="pos_42" > </div>
+	<div class="piece_area x3 y2" id="pos_32" > </div>
+	<div class="piece_area x2 y2" id="pos_22" > <div class="piece"></div></div>
+	<div class="piece_area x1 y2" id="pos_12" > </div>
 
-	<div class="piece_area x9 y3" id="area_93" > </div>
-	<div class="piece_area x8 y3" id="area_83" > </div>
-	<div class="piece_area x7 y3" id="area_73" > </div>
-	<div class="piece_area x6 y3" id="area_63" > </div>
-	<div class="piece_area x5 y3" id="area_53" > </div>
-	<div class="piece_area x4 y3" id="area_43" > </div>
-	<div class="piece_area x3 y3" id="area_33" > </div>
-	<div class="piece_area x2 y3" id="area_23" > </div>
-	<div class="piece_area x1 y3" id="area_13" > </div>
+	<div class="piece_area x9 y3" id="pos_93" > <div class="piece"></div></div>
+	<div class="piece_area x8 y3" id="pos_83" > <div class="piece"></div></div>
+	<div class="piece_area x7 y3" id="pos_73" > <div class="piece"></div></div>
+	<div class="piece_area x6 y3" id="pos_63" > <div class="piece"></div></div>
+	<div class="piece_area x5 y3" id="pos_53" > <div class="piece"></div></div>
+	<div class="piece_area x4 y3" id="pos_43" > <div class="piece"></div></div>
+	<div class="piece_area x3 y3" id="pos_33" > <div class="piece"></div></div>
+	<div class="piece_area x2 y3" id="pos_23" > <div class="piece"></div></div>
+	<div class="piece_area x1 y3" id="pos_13" > <div class="piece"></div></div>
 
-	<div class="piece_area x9 y4" id="area_94" > </div>
-	<div class="piece_area x8 y4" id="area_84" > </div>
-	<div class="piece_area x7 y4" id="area_74" > </div>
-	<div class="piece_area x6 y4" id="area_64" > </div>
-	<div class="piece_area x5 y4" id="area_54" > </div>
-	<div class="piece_area x4 y4" id="area_44" > </div>
-	<div class="piece_area x3 y4" id="area_34" > </div>
-	<div class="piece_area x2 y4" id="area_24" > </div>
-	<div class="piece_area x1 y4" id="area_14" > </div>
+	<div class="piece_area x9 y4" id="pos_94" > </div>
+	<div class="piece_area x8 y4" id="pos_84" > </div>
+	<div class="piece_area x7 y4" id="pos_74" > </div>
+	<div class="piece_area x6 y4" id="pos_64" > </div>
+	<div class="piece_area x5 y4" id="pos_54" > </div>
+	<div class="piece_area x4 y4" id="pos_44" > </div>
+	<div class="piece_area x3 y4" id="pos_34" > </div>
+	<div class="piece_area x2 y4" id="pos_24" > </div>
+	<div class="piece_area x1 y4" id="pos_14" > </div>
 
-	<div class="piece_area x9 y5" id="area_95" > </div>
-	<div class="piece_area x8 y5" id="area_85" > </div>
-	<div class="piece_area x7 y5" id="area_75" > </div>
-	<div class="piece_area x6 y5" id="area_65" > </div>
-	<div class="piece_area x5 y5" id="area_55" > </div>
-	<div class="piece_area x4 y5" id="area_45" > </div>
-	<div class="piece_area x3 y5" id="area_35" > </div>
-	<div class="piece_area x2 y5" id="area_25" > </div>
-	<div class="piece_area x1 y5" id="area_15" > </div>
+	<div class="piece_area x9 y5" id="pos_95" > </div>
+	<div class="piece_area x8 y5" id="pos_85" > </div>
+	<div class="piece_area x7 y5" id="pos_75" > </div>
+	<div class="piece_area x6 y5" id="pos_65" > </div>
+	<div class="piece_area x5 y5" id="pos_55" > </div>
+	<div class="piece_area x4 y5" id="pos_45" > </div>
+	<div class="piece_area x3 y5" id="pos_35" > </div>
+	<div class="piece_area x2 y5" id="pos_25" > </div>
+	<div class="piece_area x1 y5" id="pos_15" > </div>
 
-	<div class="piece_area x9 y6" id="area_96" > </div>
-	<div class="piece_area x8 y6" id="area_86" > </div>
-	<div class="piece_area x7 y6" id="area_76" > </div>
-	<div class="piece_area x6 y6" id="area_66" > </div>
-	<div class="piece_area x5 y6" id="area_56" > </div>
-	<div class="piece_area x4 y6" id="area_46" > </div>
-	<div class="piece_area x3 y6" id="area_36" > </div>
-	<div class="piece_area x2 y6" id="area_26" > </div>
-	<div class="piece_area x1 y6" id="area_16" > </div>
+	<div class="piece_area x9 y6" id="pos_96" > </div>
+	<div class="piece_area x8 y6" id="pos_86" > </div>
+	<div class="piece_area x7 y6" id="pos_76" > </div>
+	<div class="piece_area x6 y6" id="pos_66" > </div>
+	<div class="piece_area x5 y6" id="pos_56" > </div>
+	<div class="piece_area x4 y6" id="pos_46" > </div>
+	<div class="piece_area x3 y6" id="pos_36" > </div>
+	<div class="piece_area x2 y6" id="pos_26" > </div>
+	<div class="piece_area x1 y6" id="pos_16" > </div>
 
-	<div class="piece_area x9 y7" id="area_97" > </div>
-	<div class="piece_area x8 y7" id="area_87" > </div>
-	<div class="piece_area x7 y7" id="area_77" > </div>
-	<div class="piece_area x6 y7" id="area_67" > </div>
-	<div class="piece_area x5 y7" id="area_57" > </div>
-	<div class="piece_area x4 y7" id="area_47" > </div>
-	<div class="piece_area x3 y7" id="area_37" > </div>
-	<div class="piece_area x2 y7" id="area_27" > </div>
-	<div class="piece_area x1 y7" id="area_17" > </div>
+	<div class="piece_area x9 y7" id="pos_97" > <div class="piece"></div></div>
+	<div class="piece_area x8 y7" id="pos_87" > <div class="piece"></div></div>
+	<div class="piece_area x7 y7" id="pos_77" > <div class="piece"></div></div>
+	<div class="piece_area x6 y7" id="pos_67" > <div class="piece"></div></div>
+	<div class="piece_area x5 y7" id="pos_57" > <div class="piece"></div></div>
+	<div class="piece_area x4 y7" id="pos_47" > <div class="piece"></div></div>
+	<div class="piece_area x3 y7" id="pos_37" > <div class="piece"></div></div>
+	<div class="piece_area x2 y7" id="pos_27" > <div class="piece"></div></div>
+	<div class="piece_area x1 y7" id="pos_17" > <div class="piece"></div></div>
 
-	<div class="piece_area x9 y8" id="area_98" > </div>
-	<div class="piece_area x8 y8" id="area_88" > </div>
-	<div class="piece_area x7 y8" id="area_78" > </div>
-	<div class="piece_area x6 y8" id="area_68" > </div>
-	<div class="piece_area x5 y8" id="area_58" > </div>
-	<div class="piece_area x4 y8" id="area_48" > </div>
-	<div class="piece_area x3 y8" id="area_38" > </div>
-	<div class="piece_area x2 y8" id="area_28" > </div>
-	<div class="piece_area x1 y8" id="area_18" > </div>
+	<div class="piece_area x9 y8" id="pos_98" > </div>
+	<div class="piece_area x8 y8" id="pos_88" > <div class="piece"></div></div>
+	<div class="piece_area x7 y8" id="pos_78" > </div>
+	<div class="piece_area x6 y8" id="pos_68" > </div>
+	<div class="piece_area x5 y8" id="pos_58" > </div>
+	<div class="piece_area x4 y8" id="pos_48" > </div>
+	<div class="piece_area x3 y8" id="pos_38" > </div>
+	<div class="piece_area x2 y8" id="pos_28" > <div class="piece"></div></div>
+	<div class="piece_area x1 y8" id="pos_18" > </div>
 
-	<div class="piece_area x9 y9" id="area_99" > </div>
-	<div class="piece_area x8 y9" id="area_89" > </div>
-	<div class="piece_area x7 y9" id="area_79" > </div>
-	<div class="piece_area x6 y9" id="area_69" > </div>
-	<div class="piece_area x5 y9" id="area_59" > </div>
-	<div class="piece_area x4 y9" id="area_49" > </div>
-	<div class="piece_area x3 y9" id="area_39" > </div>
-	<div class="piece_area x2 y9" id="area_29" > </div>
-	<div class="piece_area x1 y9" id="area_19" > </div>
+	<div class="piece_area x9 y9" id="pos_99" > <div class="piece"></div></div>
+	<div class="piece_area x8 y9" id="pos_89" > <div class="piece"></div></div>
+	<div class="piece_area x7 y9" id="pos_79" > <div class="piece"></div></div>
+	<div class="piece_area x6 y9" id="pos_69" > <div class="piece"></div></div>
+	<div class="piece_area x5 y9" id="pos_59" > <div class="piece"></div></div>
+	<div class="piece_area x4 y9" id="pos_49" > <div class="piece"></div></div>
+	<div class="piece_area x3 y9" id="pos_39" > <div class="piece"></div></div>
+	<div class="piece_area x2 y9" id="pos_29" > <div class="piece"></div></div>
+	<div class="piece_area x1 y9" id="pos_19" > <div class="piece"></div></div>
 
 </div>
+
+<div id="debug"></div>
 
 </body>
 </html>
