@@ -1,5 +1,27 @@
-$(function(){
 // 駒の移動を管理するメソッド群
+
+
+$(function(){
+
+	debug("move.jsを読み込みました");
+
+	});
+
+function setPiece(posID,imgID,isBlack){
+	debug("駒を配置します..."
+		  + "posid = " +posID + ", "
+		  + "imgid = " +imgID + ", "
+		  + "isBlack = " +isBlack + ", ");
+	PieceToPut = getPieceObject(posID);
+	PieceToPut.append(createImg(imgID));
+	PieceToPut.addClass(isBlack ? "black":"white");
+}
+
+function createImg(imgID){
+	imgTag = "<img src=\"./images/koma/"
+	    	+ imgID +".png\" />";
+	return imgTag;
+}
 
 // 移動、持ち駒処理なども含めて駒を移動する(複合処理)
 function movePiece(xyPosFrom, xyPosTo, kindOfPiece, isPromoted){
@@ -25,7 +47,7 @@ function movePiece(xyPosFrom, xyPosTo, kindOfPiece, isPromoted){
 
 
 // 座標からそこに配置されたdiv.pieceを取得
-function fetchPieceFromPositon(xyPos, kindOfPiece = null){
+function fetchPieceFromPositon(xyPos, kindOfPiece){
 
 }
 
@@ -49,5 +71,3 @@ function removePiecePositon(xyPos){
 function removePieceCaptured(Whose,kindOfPiece){
 
 }
-
-});
