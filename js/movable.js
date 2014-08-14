@@ -3,7 +3,10 @@ $(function(){
 // 駒の移動可能な座標を計算してビットボードを返すメソッド群
 
 
+// 特定の座標の駒が選択可能かどうか
+function isSelectable(xyPos){
 
+}
 
 // 初期盤面トライボードを返す
 function makeInitialTriboard(){
@@ -53,3 +56,57 @@ function makeVoidBitboard()
 	return $bitBoard;
 }
 
+function computeMovableArea(selectedXYpos,selectedKindofPiece,currentTriBoard)
+{
+	switch(selectedKindofPiece)
+	{
+		case: OH
+			computed--Movable();
+		break;
+
+		case: KIN
+			computed--Movable();
+
+		break;
+
+		case: GIN
+			computed--Movable();
+
+		break;
+
+		case: KEI
+			computed--Movable();
+
+		break;
+
+		case: KYO
+
+		break;
+
+		case: KAKU
+			computed--Movable();
+		break;
+
+		case: HISHA
+			computed--Movable();
+		break;
+
+		case: OH
+			computed--Movable();
+		break;
+
+	}
+
+}
+
+
+function computeOhMovable(){}
+
+function computeKinMovable(){}
+
+function computeGinMovable(){}
+function computeKeiMovable(){}
+function computeKyoMovable(){}
+function computeKakuMovable(){}
+function computeHishaMovable(){}
+function computeFuMovable(){}
