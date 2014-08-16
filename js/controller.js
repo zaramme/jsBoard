@@ -2,8 +2,6 @@
 // メインスクリプト /////////////////////////////////////////////
 
 $(function(){
-debug("controller.jsを読み込みました");
-
 
 apiInitBoard(setClickablePieces);
 
@@ -15,37 +13,74 @@ apiInitBoard(setClickablePieces);
 function setClickablePieces(){
 	debug("移動可能な駒をセットしています");
 	var all = new bitBoard();
+	$(".draggable").draggable('destroy');
+	$(".draggable").removeClass("draggable");
 	all.eachdo(function(pos,value)
 		{
 			var CurrentPiece = getPieceObject(pos);
-			if(CurrentPiece.hasClass("black")){
-			CurrentPiece.draggable({
-				stack:".piece",
-				start: function(){ clickPiece(pos);}
-				});
+			if(CurrentPiece.length != 0 && CurrentPiece.hasClass(isBlackTurn?"black":"white")){
+				addDraggable(CurrentPiece,pos);
 			}
 		}
 	);
+
+	// 駒台
+
+	CapturedPieces = getCapturedPieces(isBlackTurn);
+	addDraggable(CapturedPieces);
+
+
+}
+
+function addDraggable(obj, pos){
+	obj.addClass("draggable");
+	obj.draggable({
+				stack:".piece",
+				revert: true,
+				start: function(){clickPiece(pos);},
+				stop: function(){endClickPiece(pos);}
+				});
 }
 
 // 駒をクリックしたときの処理
 function clickPiece(pos)
 {
 	clickedArea =  getAreaObject(pos);
-	clickedArea.addClass("selected");
+//	clickedArea.addClass("selected");
 
 	clickedPiece = getPieceObject(pos);
+
 	var target = new bitBoard();
-	// ここにbitboard設定 //
-	target.getCurrentPieces();
+	target.getAllMovable(isBlackTurn);
+	target.board[pos] = 0;
+
 	target.eachdo(function(pos,value){
 		var CurrentArea = getAreaObject(pos);
-		if(value === 0){
+		if(value === 1){
 			CurrentArea.addClass("movable");
+			CurrentArea.droppable({
+				accept: ".piece",
+				over: function(){ CurrentArea.addClass("dropin");},
+				out:  function(){ CurrentArea.removeClass("dropin");},
+				drop: function(e,ui){
+						movePiece(pos, e, ui);
+						setClickablePieces();
+
+					}
+			});
 		}
 	});
-
 }
+
+function endClickPiece(pos){
+	// selectecをクリア
+	clickedArea =  getAreaObject(pos);
+	clickedArea.removeClass("selected");	
+	$(".dropin").removeClass("dropin");
+	$(".movable").droppable("destroy");
+	$(".movable").removeClass("movable");
+}
+
 function getDroppableArea(){
 
 }

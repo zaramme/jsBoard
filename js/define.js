@@ -6,7 +6,7 @@ debug("define.jsを読み込みました");
 
 });
 
-IsBlackTurn = true;
+isBlackTurn = true;
 
 // 駒の種類
 const OH = 0;

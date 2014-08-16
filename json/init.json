@@ -1,5 +1,5 @@
 {
-		"IsBlackTurn":true,
+		"isBlackTurn":true,
 		"board":[
 		 	{"pos":91, "IsBlack":false, "img":1140},
 		 	{"pos":81, "IsBlack":false, "img":1130},

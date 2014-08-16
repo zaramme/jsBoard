@@ -4,11 +4,26 @@ h1{
 }
 
 .board{
+	border: 1px solid #999999;
 	width: 600px;
 	position: relative;
 	height: 640px;
 	background: url('../images/board/japanese-chess-b02.jpg');
+	float: left;
+	margin-right: 10px;
+	z-index:200;
 	}
+
+.black_captured_area, .white_captured_area
+{
+	background: url('../images/board/japanese-chess-bg.jpg');
+	border: 1px solid #999999;
+	width: 200px;
+	height: 230px;
+	overflow-y : scroll;
+	padding: 10px;
+	z-index:500;
+}
 
 .piece_area{
 	position: absolute;
@@ -28,6 +43,10 @@ h1{
 	background-color:  rgba(51,101,51,0.6);
 }
 
+.dropin{
+	background-color: rgba(51,130,51,0.6);
+}
+
 .x9{left:30px;} .x8{left:90px;} .x7{left:150px;} .x6{left:210px;} .x5{left:270px;}
  .x4{left:330px;} .x3{left:390px;}.x2{left:450px;} .x1{left:510px;}
 
@@ -37,8 +56,8 @@ h1{
 #debug{
 	border: 1px dotted #999999;
 	width: 600px;
-	height: 300px;
-	margin-top: 10px;
+	height: 150px;
+	font-size:12px;
 	line-height: 120%;
 	overflow-y : scroll;
 }

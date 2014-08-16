@@ -17,7 +17,7 @@ function apiStub(callback){$(function(){
 			debug("jsonを取得しました");
 			// 手番の取得
 			isBlackTurn = data.isBlackTurn;
-
+			debug("現在の手番"+ isBlackTurn? "先手":"後手");
 			// data.boardから駒データ一覧を読み込み
 			for(objName in data.board)
 			{

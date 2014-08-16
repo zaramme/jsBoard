@@ -24,6 +24,10 @@ function getPieceObject(posID){
 	return $(selectAreaID(posID)).children(".piece");
 }
 
+function getCapturedPieces(IsBlack){
+	return $(IsBlack ? "#pos_bc" : "#pos_wc").children(".piece");
+}
+
 function getAreaObject(posID){
 	return $(selectAreaID(posID))
 }
