@@ -1,5 +1,8 @@
 // 全般で使用するユーティリティクラス
 
+IsDebugMode = true;
+
+
 $(function(){
 
 	debug("utility.jsを読み込みました");
@@ -19,4 +22,8 @@ function selectAreaID(posID){
 
 function getPieceObject(posID){
 	return $(selectAreaID(posID)).children(".piece");
+}
+
+function getAreaObject(posID){
+	return $(selectAreaID(posID))
 }

@@ -8,10 +8,6 @@ $(function(){
 	});
 
 function setPiece(posID,imgID,isBlack){
-	debug("駒を配置します..."
-		  + "posid = " +posID + ", "
-		  + "imgid = " +imgID + ", "
-		  + "isBlack = " +isBlack + ", ");
 	PieceToPut = getPieceObject(posID);
 	PieceToPut.append(createImg(imgID));
 	PieceToPut.addClass(isBlack ? "black":"white");

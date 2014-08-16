@@ -1,5 +1,13 @@
 // 定数を定義するクラス
 
+$(function(){
+
+debug("define.jsを読み込みました");
+
+});
+
+IsBlackTurn = true;
+
 // 駒の種類
 const OH = 0;
 const KIN = 1;

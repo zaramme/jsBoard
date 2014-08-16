@@ -1,17 +1,15 @@
 /////////////////////////////////////////
 // API通信を制御するメソッド群
 /////////////////////////////////////////
-
-
 $(function(){
-
-	IsBoardInit = false;
-
 	debug("api.jsを読み込みました");
-
 	});
 
-function apiStub(){$(function(){
+function apiInitBoard(callback){
+	apiStub(callback);
+}
+
+function apiStub(callback){$(function(){
 	$.ajax({
 		url: './json/init.json',
 		dataType: 'json',
@@ -36,8 +34,7 @@ function apiStub(){$(function(){
 			debug("盤面読み込みが終了しました")
 			IsBoardInit =true;
 		}
-	}
-		)
+	}).then(function(){ callback("loaded");});
 });}
 
 
