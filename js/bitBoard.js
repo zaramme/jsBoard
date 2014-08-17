@@ -52,12 +52,22 @@ bitBoard.prototype.getCurrentPieces = function(){
 }
 
 bitBoard.prototype.getAllMovable = function(IsWhichTurn){
-	for(var i = 11; i<100; i++)
-	{
+	for(var i = 11; i<100; i++){
 		var CurrentArea = getAreaObject(i);
 		var CurrentChild = CurrentArea.children('.piece');
 		if(CurrentChild.length == 0 || CurrentChild.hasClass(IsWhichTurn ? "white":"black"))
 		{
+			this.board[i] = 1;
+		}
+	}
+}
+
+bitboard.prototype.getEnemyPieces = function(){
+	for(var i = 11; i<100; i++){
+		var CurrentPiece = getPieceObject(i);
+		if(CurrentPiece.length) == 0)
+			continue;
+		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black")){
 			this.board[i] = 1;
 		}
 	}

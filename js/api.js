@@ -10,6 +10,7 @@ function apiInitBoard(callback){
 }
 
 function apiStub(callback){$(function(){
+	moveAllPieceInDock();
 	$.ajax({
 		url: './json/init.json',
 		dataType: 'json',
@@ -28,7 +29,7 @@ function apiStub(callback){$(function(){
 				isBlack = obj[2];
 				isPromoted = obj[3];
 				// 駒を配置
-				setPiece(posID,kindOfPiece,isBlack,isPromoted);
+				movePieceFromDock(posID,kindOfPiece,isBlack,isPromoted);
 			}
 
 			debug("盤面読み込みが終了しました")

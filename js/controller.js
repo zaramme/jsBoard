@@ -5,10 +5,19 @@ $(function(){
 
 apiInitBoard(setClickablePieces);
 
+$("#button1").click(function(){moveAllPieceInDock()});
+
+$("#button2").click(function(){apiInitBoard(setClickablePieces)});
+
 });
 
 // 選択可能な駒のセット
 
+function moveTest(){
+	var from = getPieceObject(91);
+	var to = getAreaObject(55);
+	from.prependTo(to);
+}
 
 function setClickablePieces(){
 	debug("移動可能な駒をセットしています");
@@ -26,7 +35,6 @@ function setClickablePieces(){
 	// 駒台
 	CapturedPieces = getCapturedPieces(isBlackTurn);
 	addDraggable(CapturedPieces);
-
 
 }
 
@@ -61,9 +69,8 @@ function clickPiece(pos)
 				over: function(){ CurrentArea.addClass("dropin");},
 				out:  function(){ CurrentArea.removeClass("dropin");},
 				drop: function(e,ui){
-						movePiece(pos, e, ui);
+						moveDraggablePiece(pos, e, ui);
 						setClickablePieces();
-
 					}
 			});
 		}

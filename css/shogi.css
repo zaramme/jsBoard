@@ -59,7 +59,7 @@ h1{
 .x9{left:130px;} .x8{left:190px;} .x7{left:250px;} .x6{left:310px;} .x5{left:370px;}
  .x4{left:431px;} .x3{left:490px;}.x2{left:550px;} .x1{left:610px;}
 
-.y1{top:29px;} .y2{top:92px;} .y3{top:157px;} .y4{top:219px;} .y5{top:284px;}
+.y1{top:29px;} .y2{top:92px;} .y3{top:157px;} .y4{top:220px;} .y5{top:284px;}
 .y6{top:349px;} .y7{top:413px;}.y8{top:478px;} .y9{top:543px;}
 
 .wc{top:30px; left:10px;}
@@ -68,6 +68,7 @@ h1{
 
 .bg{position: absolute;}
 
+.dock{visibility: hidden;}
 #boardimg{
 	left:100px;
 }

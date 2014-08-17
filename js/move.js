@@ -1,35 +1,86 @@
 // 駒の移動を管理するメソッド群
 
 $(function(){
-
 	debug("move.jsを読み込みました");
+});
 
-	});
+//////////////////////////////////////////////////////
+// publicメソッド(prefix:"move")
 
-function setPiece(posID,kindOfPiece,isBlack,isPromoted){
-	PieceToPut = getPieceObject(posID);
-	HasImgTug = PieceToPut.children("img").length;
+// 移動、持ち駒処理なども含めて駒を移動する(複合処理)
+function moveDraggablePiece(pos,e,ui){
+	var MoveToArea = getAreaObject(pos);
+	var CapturePiece = MoveToArea.children();
+	var parentId = ui.draggable.parent(".piece_area").attr("id");
 
-	if(HasImgTug !== 0)
-		PieceToPut.empty();
-	insertImage(posID,kindOfPiece,isBlack,isPromoted);
-	PieceToPut.addClass(isBlack ? "black" : "white");
-	PieceToPut.addClass(kindOfPiece);
+	if(CapturePiece.length != 0)
+	{
+		// 駒を取る場合の処理
+		CapturePiece.prependTo(isBlackTurn ? $("#pos_bc") : $("#pos_wc"));
+		CapturePiece.removeClass(isBlackTurn ? "white" : "black");
+		CapturePiece.addClass(isBlackTurn ? "brack" : "white");
+	}
+	ui.draggable.prependTo(MoveToArea).css({top:'0',left:'0'});
+	isBlackTurn = !isBlackTurn;
+}
+// ドックから駒を配置する
+function movePieceFromDock(posID, kindOfPiece, isBlack, isPromoted)
+{
+	var methods = new moveMethods();
+
+	var targetArea = getAreaObject(posID);
+	var nakedPiece = $("#pos_0>.piece:first");
+
+	nakedPiece.prependTo(targetArea);
+	methods.insertImage(posID, kindOfPiece,isBlack,isPromoted);
+
+	nakedPiece.addClass(isBlack ? "black" : "white");
+	nakedPiece.addClass(kindOfPiece);
 	if(isPromoted)
-		PieceToPut.addClass("promoted");
+		nakedPiece.addClass("promoted");
 }
 
-function insertImage(posID, kindOfPiece, isReversed, isPromoted){
+// 全ての駒をドックに戻す
+function moveAllPieceInDock()
+{
+	var dock = getAreaObject(0);
+	var currentPieces = new bitBoard();
+	currentPieces.getCurrentPieces();
+
+	currentPieces.eachdo(function(pos,value){
+		var currentPiece = getPieceObject(pos);
+		currentPiece.prependTo(dock);
+		currentPiece.empty();
+		currentPiece.removeClass("white");
+		currentPiece.removeClass("black");
+		currentPiece.removeClass("promoted");
+		currentPiece.removeClass("OH");
+		currentPiece.removeClass("KIN");
+		currentPiece.removeClass("GIN");
+		currentPiece.removeClass("KEI");
+		currentPiece.removeClass("KYO");
+		currentPiece.removeClass("KAKU");
+		currentPiece.removeClass("HISHA");
+		currentPiece.removeClass("FU");
+	})
+}
+
+//////////////////////////////////////////////////////
+// privateメソッド(moveMethodsクラスのクラス内メソッドとして実装)
+
+function moveMethods(){}
+
+moveMethods.prototype.insertImage = function(posID, kindOfPiece, isReversed, isPromoted){
 	PieceToPut = getPieceObject(posID);
 
-	imgID = createImageID(kindOfPiece, isReversed, isPromoted);
+	imgID = this.createImageID(kindOfPiece, isReversed, isPromoted);
 	imgTag = "<img src=\"./images/koma/"
 			+ imgID +".png\" />";
 	PieceToPut.append(imgTag);
 }
 
 // 画像IDを生成する
-function createImageID(kindOfPiece,isReversed, isPromoted){
+moveMethods.prototype.createImageID = function (kindOfPiece,isReversed, isPromoted){
 	var imgID = new String();
 	switch(kindOfPiece){
 		case PieceImageCode.OH:
@@ -56,66 +107,4 @@ function createImageID(kindOfPiece,isReversed, isPromoted){
 		imgID += PieceImageCode.promoted;
 	}
 	return imgID;
-}
-
-// 移動、持ち駒処理なども含めて駒を移動する(複合処理)
-function movePiece(pos,e,ui){
-	var MoveToArea = getAreaObject(pos);
-	var CapturePiece = MoveToArea.children();
-	var parentId = ui.draggable.parent(".piece_area").attr("id");
-
-	if(CapturePiece.length != 0)
-	{
-		// 駒を取る場合の処理
-		CapturePiece.prependTo(isBlackTurn ? $("#pos_bc") : $("#pos_wc"));
-		CapturePiece.removeClass(isBlackTurn ? "white" : "black");
-		CapturePiece.addClass(isBlackTurn ? "brack" : "white");
-	}
-	ui.draggable.prependTo(MoveToArea).css({top:'0',left:'0'});
-	isBlackTurn = !isBlackTurn;
-
-	// from地点から駒を消去
-	// if(posIsOnPositon(xyPosFrom)){
-	// 	removePiecePositon(xyPosFrom);
-
-	// }
-	// else{
-	// 	removePieceCaptured(xyPosFrom,kindOfPiece);
-
-	// }
-
-	// // to地点に駒を配置
-	// if(posIsOnPositon(xyPosTo)){
-	// 	putPiecePosition(xyPosTo, kindOfPiece)
-	// }
-	// else{
-	// 	putPieceCaptured(xyPosTo, kindOfPiece)
-	// }
-}
-
-
-// 座標からそこに配置されたdiv.pieceを取得
-function fetchPieceFromPositon(xyPos, kindOfPiece){
-
-}
-
-
-// 盤面に駒を配置する
-function putPiecePosition(kindOfPiece, xyPos, isPromoted){
-
-}
-
-// 駒台に駒を配置する
-function putPieceCaptured(toWhose){
-
-}
-
-// 盤面から駒を消去する
-function removePiecePositon(xyPos){
-
-}
-
-// 駒台から駒を消去する
-function removePieceCaptured(Whose,kindOfPiece){
-
 }
