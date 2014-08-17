@@ -23,9 +23,7 @@ function setClickablePieces(){
 			}
 		}
 	);
-
 	// 駒台
-
 	CapturedPieces = getCapturedPieces(isBlackTurn);
 	addDraggable(CapturedPieces);
 
@@ -37,6 +35,7 @@ function addDraggable(obj, pos){
 	obj.draggable({
 				stack:".piece",
 				revert: true,
+				containment: "document",
 				start: function(){clickPiece(pos);},
 				stop: function(){endClickPiece(pos);}
 				});
@@ -45,14 +44,13 @@ function addDraggable(obj, pos){
 // 駒をクリックしたときの処理
 function clickPiece(pos)
 {
-	clickedArea =  getAreaObject(pos);
+	var clickedArea =  getAreaObject(pos);
 //	clickedArea.addClass("selected");
 
-	clickedPiece = getPieceObject(pos);
+	var clickedPiece = getPieceObject(pos);
 
 	var target = new bitBoard();
-	target.getAllMovable(isBlackTurn);
-	target.board[pos] = 0;
+	target = computeMovable(pos);
 
 	target.eachdo(function(pos,value){
 		var CurrentArea = getAreaObject(pos);
@@ -75,7 +73,7 @@ function clickPiece(pos)
 function endClickPiece(pos){
 	// selectecをクリア
 	clickedArea =  getAreaObject(pos);
-	clickedArea.removeClass("selected");	
+	clickedArea.removeClass("selected");
 	$(".dropin").removeClass("dropin");
 	$(".movable").droppable("destroy");
 	$(".movable").removeClass("movable");

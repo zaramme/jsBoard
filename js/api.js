@@ -23,12 +23,12 @@ function apiStub(callback){$(function(){
 			{
 				// 駒データの取得
 				obj = data.board[objName];
-				posID = obj.pos;
-				imgID = obj.img;
-				isBlack = obj.IsBlack;
-
+				posID = obj[0];
+				kindOfPiece = obj[1];
+				isBlack = obj[2];
+				isPromoted = obj[3];
 				// 駒を配置
-				setPiece(posID,imgID,isBlack);
+				setPiece(posID,kindOfPiece,isBlack,isPromoted);
 			}
 
 			debug("盤面読み込みが終了しました")

@@ -11,6 +11,8 @@ function bitBoard(){
 		init[i] = 0;
 	}
 	this.board = init;
+	this.pointerX = 1;
+	this.pointerY = 1;
 }
 
 bitBoard.prototype.output = function(){
@@ -44,7 +46,6 @@ bitBoard.prototype.getCurrentPieces = function(){
 		var CurrentChild = CurrentArea.children('.piece');
 		if(CurrentChild.length != 0)
 		{
-			debug("駒が見つかりました..." + i);
 			this.board[i] = 1;
 		}
 	}
@@ -60,4 +61,81 @@ bitBoard.prototype.getAllMovable = function(IsWhichTurn){
 			this.board[i] = 1;
 		}
 	}
+}
+
+bitBoard.prototype.setPointer = function(pos){
+	this.pointerX = Math.floor(pos /10);
+	this.pointerY = pos % 10;
+	debug("ポインタがセットされました…X="+ this.pointerX + ", Y=" + this.pointerY);
+}
+
+// ポインタを基準にエリアを追加する
+bitBoard.prototype.addArea = function(vectorX, vectorY, isBlack){
+	var targetPosX = this.pointerX;
+	var targetPosY = this.pointerY;
+	// ベクターを座標の方向に反転する
+	if(isBlack){
+		vectorY = vectorY * -1;
+	}
+	else{
+		vectorX = vectorX * -1;
+	}
+
+	targetPosX = this.pointerX + vectorX;
+	targetPosY = this.pointerY + vectorY;
+
+	// ベクター演算結果が盤外になる場合は処理を行わない
+	if(!this.isPositionInBoard(targetPosX,targetPosY)){
+		return;
+	}
+
+	debug("対象先が盤の内側です。")
+	this.board[this.getPosXY(targetPosX,targetPosY)] = 1;
+}
+
+bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
+	var currentBoard = new bitBoard();
+	currentBoard.getCurrentPieces();
+	debug("一方方向の連続エリアを追加しています...");
+	// ベクターを先後に応じた方向に反転する
+	if(isBlack){
+		vectorY = vectorY * -1;
+	}
+	else{
+		vectorX = vectorX * -1;
+	}
+
+	var targetPosX = this.pointerX + vectorX;
+	var targetPosY = this.pointerY + vectorY;
+
+	currentBoard.output();
+
+	while(this.isPositionInBoard(targetPosX,targetPosY)){
+		var targetPosXY = this.getPosXY(targetPosX,targetPosY);
+		debug("targetPosXY="+ targetPosXY);
+
+		this.board[targetPosXY] = 1;
+
+		if(currentBoard.board[targetPosXY] === 1)
+		{
+			debug("駒にぶつかりました");
+			break;
+		}
+		targetPosX = targetPosX + vectorX;
+		targetPosY = targetPosY + vectorY;
+	}
+}
+
+bitBoard.prototype.isPositionInBoard = function(posX,posY){
+	if(posX < 1 || 9 < posX ){
+		return false;
+	}
+	if(posY < 1 || 9 < posY ){
+		return false;
+	}
+	return true;
+}
+
+bitBoard.prototype.getPosXY = function(posX,posY){
+	return posX * 10 + posY;
 }

@@ -1,22 +1,61 @@
 // 駒の移動を管理するメソッド群
 
-
 $(function(){
 
 	debug("move.jsを読み込みました");
 
 	});
 
-function setPiece(posID,imgID,isBlack){
+function setPiece(posID,kindOfPiece,isBlack,isPromoted){
 	PieceToPut = getPieceObject(posID);
-	PieceToPut.append(createImg(imgID));
-	PieceToPut.addClass(isBlack ? "black":"white");
+	HasImgTug = PieceToPut.children("img").length;
+
+	if(HasImgTug !== 0)
+		PieceToPut.empty();
+	insertImage(posID,kindOfPiece,isBlack,isPromoted);
+	PieceToPut.addClass(isBlack ? "black" : "white");
+	PieceToPut.addClass(kindOfPiece);
+	if(isPromoted)
+		PieceToPut.addClass("promoted");
 }
 
-function createImg(imgID){
+function insertImage(posID, kindOfPiece, isReversed, isPromoted){
+	PieceToPut = getPieceObject(posID);
+
+	imgID = createImageID(kindOfPiece, isReversed, isPromoted);
 	imgTag = "<img src=\"./images/koma/"
-	    	+ imgID +".png\" />";
-	return imgTag;
+			+ imgID +".png\" />";
+	PieceToPut.append(imgTag);
+}
+
+// 画像IDを生成する
+function createImageID(kindOfPiece,isReversed, isPromoted){
+	var imgID = new String();
+	switch(kindOfPiece){
+		case PieceImageCode.OH:
+			imgID += PieceImageCode.OH; break;
+		case PieceImageCode.KIN:
+			imgID += PieceImageCode.KIN; break;
+		case PieceImageCode.GIN:
+			imgID += PieceImageCode.GIN; break;
+		case PieceImageCode.KEI:
+			imgID += PieceImageCode.KEI; break;
+		case PieceImageCode.KYO:
+			imgID += PieceImageCode.KYO; break;
+		case PieceImageCode.KAKU:
+			imgID += PieceImageCode.KAKU; break;
+		case PieceImageCode.HISHA:
+			imgID += PieceImageCode.HISHA; break;
+		case PieceImageCode.FU:
+			imgID += PieceImageCode.FU; break;
+		}
+	if(!isReversed){
+		imgID += PieceImageCode.reverse;
+	}
+	if(isPromoted){
+		imgID += PieceImageCode.promoted;
+	}
+	return imgID;
 }
 
 // 移動、持ち駒処理なども含めて駒を移動する(複合処理)

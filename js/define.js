@@ -8,6 +8,19 @@ debug("define.jsを読み込みました");
 
 isBlackTurn = true;
 
+PieceImageCode = new Object();
+PieceImageCode.OH = "OH";
+PieceImageCode.KIN = "KIN";
+PieceImageCode.GIN = "GIN";
+PieceImageCode.KEI = "KEI";
+PieceImageCode.KYO = "KYO";
+PieceImageCode.KAKU = "KAKU";
+PieceImageCode.HISHA = "HISHA";
+PieceImageCode.FU = "FU";
+PieceImageCode.separator = "_";
+PieceImageCode.reverse = "r";
+PieceImageCode.promoted = "p";
+
 // 駒の種類
 const OH = 0;
 const KIN = 1;

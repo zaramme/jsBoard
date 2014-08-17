@@ -31,3 +31,24 @@ function getCapturedPieces(IsBlack){
 function getAreaObject(posID){
 	return $(selectAreaID(posID))
 }
+
+function getPieceName(PieceObj){
+	if(PieceObj.hasClass("OH"))
+		return "OH";
+	else if(PieceObj.hasClass("KIN"))
+		return "KIN";
+	else if(PieceObj.hasClass("GIN"))
+		return "GIN";
+	else if(PieceObj.hasClass("KEI"))
+		return "KEI";
+	else if(PieceObj.hasClass("KYO"))
+		return "KYO";
+	else if(PieceObj.hasClass("KAKU"))
+		return "KAKU";
+	else if(PieceObj.hasClass("HISHA"))
+		return "HISHA";
+	else if(PieceObj.hasClass("FU"))
+		return "FU";
+	else
+		return false;
+}
