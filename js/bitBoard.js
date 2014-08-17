@@ -62,16 +62,16 @@ bitBoard.prototype.getAllMovable = function(IsWhichTurn){
 	}
 }
 
-bitboard.prototype.getEnemyPieces = function(){
-	for(var i = 11; i<100; i++){
-		var CurrentPiece = getPieceObject(i);
-		if(CurrentPiece.length) == 0)
-			continue;
-		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black")){
-			this.board[i] = 1;
-		}
-	}
-}
+// bitboard.prototype.getEnemyPieces = function(){
+// 	for(var i = 11; i<100; i++){
+// 		var CurrentPiece = getPieceObject(i);
+// 		if(CurrentPiece.length === 0)
+// 			continue;
+// 		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black")){
+// 			this.board[i] = 1;
+// 		}
+// 	}
+// }
 
 bitBoard.prototype.setPointer = function(pos){
 	this.pointerX = Math.floor(pos /10);
