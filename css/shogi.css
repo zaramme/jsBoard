@@ -56,6 +56,10 @@ h1{
 	background-color: rgba(51,130,51,0.6);
 }
 
+.lastmoved{
+	background-color: rgba(211, 84, 0,0.5);
+}
+
 .x9{left:130px;} .x8{left:190px;} .x7{left:250px;} .x6{left:310px;} .x5{left:370px;}
  .x4{left:431px;} .x3{left:490px;}.x2{left:550px;} .x1{left:610px;}
 

@@ -149,13 +149,17 @@ movableMethods.prototype.computeRyuohMovable = function(targetBoard,isBlack){
 }
 
 // 敵駒の利きを計算する
-movableMethods.prototype.computeEnemyPower = function(){
+function computeEnemyPower(){
 	var targetBoard = new bitBoard();
 	targetBoard.getEnemyPieces();
 
+	var resultBoard = new bitBoard();
 	targetBoard.eachdo(function(pos,value){
-		var CurrentPiece = getPieceObject(pos);
-		targetBoard.serPointer(pos);
+		if(value == 1){
+			var CurrentBoard = new computeMovable(pos);
+			resultBoard = resultBoard.marge(CurrentBoard);
+		}
+	});
 
-	})
+	return resultBoard;
 }

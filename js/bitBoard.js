@@ -62,21 +62,20 @@ bitBoard.prototype.getAllMovable = function(IsWhichTurn){
 	}
 }
 
-// bitboard.prototype.getEnemyPieces = function(){
-// 	for(var i = 11; i<100; i++){
-// 		var CurrentPiece = getPieceObject(i);
-// 		if(CurrentPiece.length === 0)
-// 			continue;
-// 		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black")){
-// 			this.board[i] = 1;
-// 		}
-// 	}
-// }
+bitBoard.prototype.getEnemyPieces = function(){
+	for(var i = 11; i<100; i++){
+		var CurrentPiece = getPieceObject(i);
+		if(CurrentPiece.length === 0)
+			continue;
+		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black"))
+			this.board[i] = 1;
+	}
+}
 
 bitBoard.prototype.setPointer = function(pos){
 	this.pointerX = Math.floor(pos /10);
 	this.pointerY = pos % 10;
-	debug("ポインタがセットされました…X="+ this.pointerX + ", Y=" + this.pointerY);
+	//debug("ポインタがセットされました…X="+ this.pointerX + ", Y=" + this.pointerY);
 }
 
 // ポインタを基準にエリアを追加する
@@ -99,14 +98,14 @@ bitBoard.prototype.addArea = function(vectorX, vectorY, isBlack){
 		return;
 	}
 
-	debug("対象先が盤の内側です。")
+	//debug("対象先が盤の内側です。")
 	this.board[this.getPosXY(targetPosX,targetPosY)] = 1;
 }
 
 bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 	var currentBoard = new bitBoard();
 	currentBoard.getCurrentPieces();
-	debug("一方方向の連続エリアを追加しています...");
+	//debug("一方方向の連続エリアを追加しています...");
 	// ベクターを先後に応じた方向に反転する
 	if(isBlack){
 		vectorY = vectorY * -1;
@@ -118,7 +117,7 @@ bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 	var targetPosX = this.pointerX + vectorX;
 	var targetPosY = this.pointerY + vectorY;
 
-	currentBoard.output();
+	//currentBoard.output();
 
 	while(this.isPositionInBoard(targetPosX,targetPosY)){
 		var targetPosXY = this.getPosXY(targetPosX,targetPosY);
@@ -128,7 +127,7 @@ bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 
 		if(currentBoard.board[targetPosXY] === 1)
 		{
-			debug("駒にぶつかりました");
+			//debug("駒にぶつかりました");
 			break;
 		}
 		targetPosX = targetPosX + vectorX;
@@ -148,4 +147,21 @@ bitBoard.prototype.isPositionInBoard = function(posX,posY){
 
 bitBoard.prototype.getPosXY = function(posX,posY){
 	return posX * 10 + posY;
+}
+
+
+// 引数に取ったボードとの和を取る
+bitBoard.prototype.marge = function(otherBoard)
+{
+	this.output();
+
+	resultBoard = this;
+
+	this.eachdo(function(pos,value){
+		if(otherBoard.board[pos]==1){
+			resultBoard.board[pos] = 1;
+		}
+	});
+
+	return resultBoard;
 }

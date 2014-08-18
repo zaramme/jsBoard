@@ -9,6 +9,14 @@ $("#button1").click(function(){moveAllPieceInDock()});
 
 $("#button2").click(function(){apiInitBoard(setClickablePieces)});
 
+$("#button3").click(function(){
+	var targetBoard = computeEnemyPower();
+	targetBoard.eachdo(function(pos,value){
+		var CurrentArea = getAreaObject(pos);
+		if(value === 1)
+			CurrentArea.addClass("movable");
+		});
+})
 });
 
 // 選択可能な駒のセット
@@ -85,31 +93,3 @@ function endClickPiece(pos){
 	$(".movable").droppable("destroy");
 	$(".movable").removeClass("movable");
 }
-
-function getDroppableArea(){
-
-}
-
-	// 	/* 駒座標の取得 */
-	// 	bitBoardMovable = ;　(movavle)移動可能場所の取得()
-
-	// 	changeMovable(bitBoardMovable);
-
-	// 	changeSelectable();
-
-	// }
-
-
-// 駒をドロップした時の処理
-function dropPiece(draggingPiece, droppedArea)
-{
-	// if(/*ドロップ地点がMovableかどうか*/){
-	// 	xyPosFrom = getxyPosSelected();
-	// 	movePiece()
-
-
-	// 	/* ajax通信*/
-
-	// }
-}
-

@@ -21,6 +21,8 @@ function moveDraggablePiece(pos,e,ui){
 		CapturePiece.addClass(isBlackTurn ? "brack" : "white");
 	}
 	ui.draggable.prependTo(MoveToArea).css({top:'0',left:'0'});
+	$(".lastmoved").removeClass("lastmoved");
+	ui.draggable.addClass("lastmoved");
 	isBlackTurn = !isBlackTurn;
 }
 // ドックから駒を配置する
@@ -46,6 +48,8 @@ function moveAllPieceInDock()
 	var dock = getAreaObject(0);
 	var currentPieces = new bitBoard();
 	currentPieces.getCurrentPieces();
+
+ 	$(".lastmoved").removeClass("lastmoved");
 
 	currentPieces.eachdo(function(pos,value){
 		var currentPiece = getPieceObject(pos);
