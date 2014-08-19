@@ -10,7 +10,9 @@ $("#button1").click(function(){moveAllPieceInDock()});
 $("#button2").click(function(){apiInitBoard(setClickablePieces)});
 
 $("#button3").click(function(){
+	var targetBoard = new bitBoard();
 	var targetBoard = computeEnemyPower();
+	targetBoard.output();
 	targetBoard.eachdo(function(pos,value){
 		var CurrentArea = getAreaObject(pos);
 		if(value === 1)

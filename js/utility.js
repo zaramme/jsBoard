@@ -52,3 +52,17 @@ function getPieceName(PieceObj){
 	else
 		return false;
 }
+
+function isPieceBlack(pos){
+	CurrentPiece = getPieceObject(pos);
+	if(CurrentPiece.hasClass("black"))
+	{
+		return true;
+	}
+	else if(CurrentPiece.hasClass("white"))
+	{
+		return false;
+	}
+
+	return null;
+}

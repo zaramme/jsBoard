@@ -65,7 +65,7 @@ bitBoard.prototype.getAllMovable = function(IsWhichTurn){
 bitBoard.prototype.getEnemyPieces = function(){
 	for(var i = 11; i<100; i++){
 		var CurrentPiece = getPieceObject(i);
-		if(CurrentPiece.length === 0)
+		if(CurrentPiece.length == 0)
 			continue;
 		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black"))
 			this.board[i] = 1;
@@ -150,16 +150,28 @@ bitBoard.prototype.getPosXY = function(posX,posY){
 }
 
 
-// 引数に取ったボードとの和を取る
+// 引数に取ったボードとの和を取り、その結果を返す(immutable)
 bitBoard.prototype.marge = function(otherBoard)
 {
-	this.output();
-
-	resultBoard = this;
+	var resultBoard = this;
 
 	this.eachdo(function(pos,value){
 		if(otherBoard.board[pos]==1){
 			resultBoard.board[pos] = 1;
+		}
+	});
+
+	return resultBoard;
+}
+
+// 引数に取ったボードとの差を取り、その結果を返す
+bitBoard.prototype.minus = function(otherBoard)
+{
+	var resultBoard = this;
+
+	this.eachdo(function(pos,value){
+		if(otherBoard.board[pos] == 1){
+			resultBoard.board[pos] = 0;
 		}
 	});
 

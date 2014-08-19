@@ -6,15 +6,18 @@ debug("bitBoard.jsを読み込みました");
 
 function computeMovable(pos){
 	var methods = new movableMethods();
+
 	var clickedPiece = getPieceObject(pos);
+	var isBlack = isPieceBlack(pos);
 	var kindOfPiece = getPieceName(clickedPiece);
+
 	var isPromoted = clickedPiece.hasClass("promoted");
 	var isBlack = clickedPiece.hasClass("black");
 	var movableBoard = new bitBoard();
 	movableBoard.setPointer(pos);
 
 	var triCurrentPieces = new triBoard();
-	triCurrentPieces.getCurrentPieces(isBlackTurn);
+	triCurrentPieces.getCurrentPieces(isBlack);
 
 	if(!isPromoted){
 		switch(kindOfPiece){
@@ -85,6 +88,12 @@ movableMethods.prototype.computeOhMovable = function(targetBoard,isBlack){
 	targetBoard.addArea(-1,-1,isBlack);
 	targetBoard.addArea(0,-1,isBlack);
 	targetBoard.addArea(1,-1,isBlack);
+
+	// 相手の駒の利きには動けない
+//	var enemyPowerBoard = new bitBoard();
+//	enemyPowerBoard = computeEnemyPower();
+//	targetBoard.minus(enemyPowerBoard);
+
 }
 
 movableMethods.prototype.computeKinMovable = function(targetBoard,isBlack){
@@ -152,6 +161,9 @@ movableMethods.prototype.computeRyuohMovable = function(targetBoard,isBlack){
 function computeEnemyPower(){
 	var targetBoard = new bitBoard();
 	targetBoard.getEnemyPieces();
+
+	debug("enemy board is ...");
+	targetBoard.output();
 
 	var resultBoard = new bitBoard();
 	targetBoard.eachdo(function(pos,value){
