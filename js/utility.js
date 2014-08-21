@@ -6,8 +6,7 @@ IsDebugMode = true;
 $(function(){
 
 	debug("utility.jsを読み込みました");
-
-	});
+});
 
 function debug(message)
 {
@@ -18,18 +17,6 @@ function debug(message)
 
 function selectAreaID(posID){
 	return "#pos_" + posID;
-}
-
-function getPieceObject(posID){
-	return $(selectAreaID(posID)).children(".piece");
-}
-
-function getCapturedPieces(IsBlack){
-	return $(IsBlack ? "#pos_bc" : "#pos_wc").children(".piece");
-}
-
-function getAreaObject(posID){
-	return $(selectAreaID(posID))
 }
 
 function getPieceName(PieceObj){
@@ -52,3 +39,40 @@ function getPieceName(PieceObj){
 	else
 		return false;
 }
+
+
+function getPieceObject(posID){
+	return $(selectAreaID(posID)).children(".piece");
+}
+
+function getCapturedPieces(IsBlack){
+	if(IsBlack == null)
+		return $(".captured").children(".piece");
+	else
+		return $(IsBlack ? "#pos_bc" : "#pos_wc").children(".piece");
+}
+
+function getAreaObject(posID){
+	return $(selectAreaID(posID));
+}
+
+
+function isPieceBlack(pos){
+	CurrentPiece = getPieceObject(pos);
+	if(CurrentPiece.hasClass("black"))
+	{
+		return true;
+	}
+	else if(CurrentPiece.hasClass("white"))
+	{
+		return false;
+	}
+
+	return null;
+}
+
+// function getPosFromPiece(PieceObj){
+// 	PieceArea = PieceObj.parent();
+
+// 	return pos;
+// }

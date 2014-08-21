@@ -39,6 +39,13 @@ bitBoard.prototype.eachdo = function(func){
 	}
 }
 
+bitBoard.prototype.allArea = function(){
+	for(var i = 11; i<100; i++)
+	{
+		this.board[i] = 1;
+	}	
+}
+
 bitBoard.prototype.getCurrentPieces = function(){
 	for(var i = 11; i<100; i++)
 	{
@@ -65,7 +72,7 @@ bitBoard.prototype.getAllMovable = function(IsWhichTurn){
 bitBoard.prototype.getEnemyPieces = function(){
 	for(var i = 11; i<100; i++){
 		var CurrentPiece = getPieceObject(i);
-		if(CurrentPiece.length === 0)
+		if(CurrentPiece.length == 0)
 			continue;
 		if(CurrentPiece.hasClass(isBlackTurn ? "white" : "black"))
 			this.board[i] = 1;
@@ -121,7 +128,6 @@ bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 
 	while(this.isPositionInBoard(targetPosX,targetPosY)){
 		var targetPosXY = this.getPosXY(targetPosX,targetPosY);
-		debug("targetPosXY="+ targetPosXY);
 
 		this.board[targetPosXY] = 1;
 
@@ -134,6 +140,23 @@ bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 		targetPosY = targetPosY + vectorY;
 	}
 }
+
+bitBoard.prototype.addColumnArea = function(column){
+	for(var i = 11; i<100; i++)
+	{
+		if( Math.floor(i / 10) == column)
+			this.board[i] = 1;
+	}
+}
+
+bitBoard.prototype.addRowArea = function(row){
+	for(var i = 11; i<100; i++)
+	{
+		if( (i % 10) == row)
+			this.board[i] = 1;
+	}
+}
+
 
 bitBoard.prototype.isPositionInBoard = function(posX,posY){
 	if(posX < 1 || 9 < posX ){
@@ -150,16 +173,28 @@ bitBoard.prototype.getPosXY = function(posX,posY){
 }
 
 
-// 引数に取ったボードとの和を取る
+// 引数に取ったボードとの和を取り、その結果を返す(immutable)
 bitBoard.prototype.marge = function(otherBoard)
 {
-	this.output();
-
-	resultBoard = this;
+	var resultBoard = this;
 
 	this.eachdo(function(pos,value){
 		if(otherBoard.board[pos]==1){
 			resultBoard.board[pos] = 1;
+		}
+	});
+
+	return resultBoard;
+}
+
+// 引数に取ったボードとの差を取り、その結果を返す
+bitBoard.prototype.minus = function(otherBoard)
+{
+	var resultBoard = this;
+
+	this.eachdo(function(pos,value){
+		if(otherBoard.board[pos] == 1){
+			resultBoard.board[pos] = 0;
 		}
 	});
 
