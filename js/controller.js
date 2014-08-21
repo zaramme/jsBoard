@@ -30,10 +30,12 @@ function moveTest(){
 }
 
 function setClickablePieces(){
-	debug("移動可能な駒をセットしています");
-	var all = new bitBoard();
 	$(".draggable").draggable('destroy');
 	$(".draggable").removeClass("draggable");
+
+
+	// 盤上の手番の駒すべてにDraggableを適用
+	var all = new bitBoard();
 	all.eachdo(function(pos,value)
 		{
 			var CurrentPiece = getPieceObject(pos);
@@ -42,33 +44,37 @@ function setClickablePieces(){
 			}
 		}
 	);
-	// 駒台
+	// 駒台の手番の駒すべてにDraggableを適用
 	CapturedPieces = getCapturedPieces(isBlackTurn);
-	addDraggable(CapturedPieces);
-
+	CapturedPieces.each(function(){
+		addDraggable($(this), 0);
+	});
 }
 
 function addDraggable(obj, pos){
+	if(pos=="captured"){
+		debug("持ち駒のDraggableを設定しています");
+	}
 	obj.addClass("draggable");
 	obj.draggable({
 				stack:".piece",
 				revert: true,
 				containment: "document",
-				start: function(){clickPiece(pos);},
+				start: function(){clickPiece(pos,obj);},
 				stop: function(){endClickPiece(pos);}
 				});
 }
 
 // 駒をクリックしたときの処理
-function clickPiece(pos)
+function clickPiece(pos, obj)
 {
 	var clickedArea =  getAreaObject(pos);
 //	clickedArea.addClass("selected");
 
-	var clickedPiece = getPieceObject(pos);
+	var clickedPiece = obj;
 
 	var target = new bitBoard();
-	target = computeMovable(pos);
+	target = computeMovable(pos,obj);
 
 	target.eachdo(function(pos,value){
 		var CurrentArea = getAreaObject(pos);

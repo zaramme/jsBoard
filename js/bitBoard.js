@@ -39,6 +39,13 @@ bitBoard.prototype.eachdo = function(func){
 	}
 }
 
+bitBoard.prototype.allArea = function(){
+	for(var i = 11; i<100; i++)
+	{
+		this.board[i] = 1;
+	}	
+}
+
 bitBoard.prototype.getCurrentPieces = function(){
 	for(var i = 11; i<100; i++)
 	{
@@ -121,7 +128,6 @@ bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 
 	while(this.isPositionInBoard(targetPosX,targetPosY)){
 		var targetPosXY = this.getPosXY(targetPosX,targetPosY);
-		debug("targetPosXY="+ targetPosXY);
 
 		this.board[targetPosXY] = 1;
 
@@ -134,6 +140,23 @@ bitBoard.prototype.addStraightArea = function(vectorX, vectorY, isBlack){
 		targetPosY = targetPosY + vectorY;
 	}
 }
+
+bitBoard.prototype.addColumnArea = function(column){
+	for(var i = 11; i<100; i++)
+	{
+		if( Math.floor(i / 10) == column)
+			this.board[i] = 1;
+	}
+}
+
+bitBoard.prototype.addRowArea = function(row){
+	for(var i = 11; i<100; i++)
+	{
+		if( (i % 10) == row)
+			this.board[i] = 1;
+	}
+}
+
 
 bitBoard.prototype.isPositionInBoard = function(posX,posY){
 	if(posX < 1 || 9 < posX ){

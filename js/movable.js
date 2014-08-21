@@ -4,10 +4,10 @@ debug("bitBoard.jsを読み込みました");
 
 });
 
-function computeMovable(pos){
+function computeMovable(pos,obj){
 	var methods = new movableMethods();
 
-	var clickedPiece = getPieceObject(pos);
+	var clickedPiece = obj;
 	var isBlack = isPieceBlack(pos);
 	var kindOfPiece = getPieceName(clickedPiece);
 
@@ -19,7 +19,22 @@ function computeMovable(pos){
 	var triCurrentPieces = new triBoard();
 	triCurrentPieces.getCurrentPieces(isBlack);
 
-	if(!isPromoted){
+	if(pos == 0){
+		movableBoard.allArea();
+		CurrentBoard = new bitBoard();
+		CurrentBoard.getCurrentPieces()
+		movableBoard.minus(CurrentBoard); // 駒の無い場所を取得
+
+		switch(kindOfPiece){
+			case "FU":
+				methods.computeFuDroppable(movableBoard,isBlack); break;
+			case "KYO":
+				methods.computeKyoDroppable(movableBoard,isBlack); break;
+			case "KEI":
+				methods.computeKeiDroppable(movableBoard,isBlack); break;
+		}
+	}
+	else if(!isPromoted){
 		switch(kindOfPiece){
 			case "FU":
 				methods.computeFuMovable(movableBoard,isBlack); break;
@@ -68,12 +83,14 @@ function computeMovable(pos){
 		}
 
 	}
-	// 移動先ビットボードから自分の駒がいる座標を消去
+	// 移動先ビットボードから自分の駒がいる座標を消去(駒の利き計算時はキャンセル)
+	if(!isComputing)
+	{
 	movableBoard.eachdo(function(pos,value){
 		if(triCurrentPieces.board[pos] === 1)
 			movableBoard.board[pos] = 0;
-	});
-	movableBoard.output();
+	});	
+	}
 	return movableBoard;
 }
 
@@ -90,9 +107,12 @@ movableMethods.prototype.computeOhMovable = function(targetBoard,isBlack){
 	targetBoard.addArea(1,-1,isBlack);
 
 	// 相手の駒の利きには動けない
-//	var enemyPowerBoard = new bitBoard();
-//	enemyPowerBoard = computeEnemyPower();
-//	targetBoard.minus(enemyPowerBoard);
+	// この処理はループ時にキャンセルする
+	if(isComputing)
+		return;
+	var enemyPowerBoard = new bitBoard();
+	enemyPowerBoard = computeEnemyPower();
+	targetBoard.minus(enemyPowerBoard);
 
 }
 
@@ -157,8 +177,52 @@ movableMethods.prototype.computeRyuohMovable = function(targetBoard,isBlack){
 	targetBoard.addArea(1,-1,isBlack);
 }
 
+movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
+
+	columnsBoard = new bitBoard();
+
+	// 二歩の処理
+	for(var i = 11; i < 100; i++)
+	{
+		var current = getPieceObject(i);
+		if(current.length == 0)
+			continue;
+
+		// 自駒の歩を探索
+		if(getPieceName(current) == "FU" && isBlackTurn == isPieceBlack(i))
+		{
+			// 自駒の歩のある列を追加
+			columnsBoard.addColumnArea(Math.floor(i/10));
+		}
+	}
+
+	// 先手の場合は一段目、
+
+	rowsBoard = new bitBoard();
+	rowsBoard.addRowArea(isBlackTurn ? 1 : 9)
+
+	//ビッドボードの差を取る
+	targetBoard.minus(columnsBoard);
+	targetBoard.minus(rowsBoard);
+}
+
+movableMethods.prototype.computeKeiDroppable = function(targetBoard,isBlack){
+	rowsBoard = new bitBoard();
+	rowsBoard.addRowArea(isBlackTurn ? 1 : 9);
+	rowsBoard.addRowArea(isBlackTurn ? 2 : 8)
+	targetBoard.minus(rowsBoard);
+}
+
+movableMethods.prototype.computeKyoDroppable = function(targetBoard,isBlack){
+	rowsBoard = new bitBoard();
+	rowsBoard.addRowArea(isBlackTurn ? 1 : 9);
+	targetBoard.minus(rowsBoard);
+}
+
+
 // 敵駒の利きを計算する
 function computeEnemyPower(){
+	isComputing = true; // 実行中フラグをたてる
 	var targetBoard = new bitBoard();
 	targetBoard.getEnemyPieces();
 
@@ -166,12 +230,13 @@ function computeEnemyPower(){
 	targetBoard.output();
 
 	var resultBoard = new bitBoard();
-	targetBoard.eachdo(function(pos,value){
-		if(value == 1){
-			var CurrentBoard = new computeMovable(pos);
-			resultBoard = resultBoard.marge(CurrentBoard);
-		}
-	});
+	 targetBoard.eachdo(function(pos,value){
+	 	if(value == 1){
+	 		var CurrentBoard = new computeMovable(pos, getPieceObject(pos));
+	 		resultBoard = resultBoard.marge(CurrentBoard);
+	 	}
+	 });
 
+	isComputing = false;
 	return resultBoard;
 }

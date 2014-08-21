@@ -1,13 +1,12 @@
 // 定数を定義するクラス
-
 $(function(){
 
 debug("define.jsを読み込みました");
 
 });
 
-isBlackTurn = true;
-
+var isBlackTurn = true;
+var isComputing = false;
 PieceImageCode = new Object();
 PieceImageCode.OH = "OH";
 PieceImageCode.KIN = "KIN";
