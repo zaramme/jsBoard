@@ -85,12 +85,17 @@ function clickPiece(pos, obj)
 				over: function(){ CurrentArea.addClass("dropin");},
 				out:  function(){ CurrentArea.removeClass("dropin");},
 				drop: function(e,ui){
-						moveDraggablePiece(pos, e, ui);
+						moveDraggablePiece(pos, e, ui,true);
 						setClickablePieces();
 					}
 			});
 		}
 	});
+}
+
+function selectPromote(pos,e,ui){
+
+
 }
 
 function endClickPiece(pos){

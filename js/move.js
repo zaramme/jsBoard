@@ -8,7 +8,7 @@ $(function(){
 // publicメソッド(prefix:"move")
 
 // 移動、持ち駒処理なども含めて駒を移動する(複合処理)
-function moveDraggablePiece(pos,e,ui){
+function moveDraggablePiece(pos,e,ui,isPromoted){
 	var methods = new moveMethods();
 	var MoveToArea = getAreaObject(pos);
 	var CapturePiece = MoveToArea.children();
@@ -16,17 +16,24 @@ function moveDraggablePiece(pos,e,ui){
 
 	if(CapturePiece.length != 0)
 	{
-		// 駒を取る場合の処理		
-		methods.appendImage(CapturePiece,!isBlackTurn,false);
+		// 駒を取る場合の処理
+		methods.appendImage(CapturePiece,isBlackTurn,false);
 		CapturePiece.prependTo(isBlackTurn ? $("#pos_bc") : $("#pos_wc"));
 		CapturePiece.removeClass(isBlackTurn ? "white" : "black");
 		CapturePiece.addClass(isBlackTurn ? "brack" : "white");
 	}
 	ui.draggable.prependTo(MoveToArea).css({top:'0',left:'0'});
+
+	if(isPromoted){
+		var isBlack = ui.draggable.hasClass('black');
+		ui.draggable.addClass('promoted')
+		methods.appendImage(ui.draggable, isBlack, true);
+	}
 	$(".lastmoved").removeClass("lastmoved");
 	ui.draggable.addClass("lastmoved");
 	isBlackTurn = !isBlackTurn;
 }
+
 // ドックから駒を配置する
 function movePieceFromDock(posID, kindOfPiece, isBlack, isPromoted)
 {
@@ -103,9 +110,10 @@ moveMethods.prototype.insertImage = function(posID, kindOfPiece, isReversed, isP
 
 moveMethods.prototype.appendImage = function(pieceObj, isBlack, isPromoted){
 	kindOfPiece = getPieceName(pieceObj);
-	imgID = this.createImageID(kindOfPiece,!isBlack, isPromoted);
+	imgID = this.createImageID(kindOfPiece,isBlack, isPromoted);
 	pieceObj.children("img").attr("src","./images/koma/"+imgID+".png");
 }
+
 // 画像IDを生成する
 moveMethods.prototype.createImageID = function (kindOfPiece,isReversed, isPromoted){
 	var imgID = new String();
