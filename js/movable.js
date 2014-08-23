@@ -188,7 +188,9 @@ movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
 			continue;
 
 		// 自駒の歩を探索
-		if(getPieceName(current) == "FU" && isBlackTurn == isPieceBlack(i))
+		if(getPieceName(current) == "FU" 
+			&& isBlackTurn == isPieceBlack(i)
+			&& !current.hasClass("promoted"))
 		{
 			// 自駒の歩のある列を追加
 			columnsBoard.addColumnArea(Math.floor(i/10));

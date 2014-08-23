@@ -95,6 +95,14 @@ h1{
 	width: 80px;
 	height: 55px;
 	border: solid 1px #3333FF;
+	background: #cccccc;
+	z-index:10000;
+}
+
+#button{
+	float :left;
+	width: 30px;
+	height: 55px;
 }
 
 .reserved{

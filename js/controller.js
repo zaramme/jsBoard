@@ -161,7 +161,7 @@ function FinishMove()
 	isReserving = false;
 	isBlackTurn = !isBlackTurn;
 
-	isOhte = computeIsOhte();
+//	isOhte = computeIsOhte();
 
 	$("#selectbox").css("visibility", "hidden");
 	setClickablePieces();
