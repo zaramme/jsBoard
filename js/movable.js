@@ -4,20 +4,17 @@ debug("bitBoard.jsを読み込みました");
 
 });
 
-function computeMovable(pos,obj){
+function computeMovable(pos,clickedPiece){
 	var methods = new movableMethods();
 
-	var clickedPiece = obj;
-	var isBlack = isPieceBlack(pos);
+	var pcClicked = new pieceConductor(pos);
 	var kindOfPiece = getPieceName(clickedPiece);
 
-	var isPromoted = clickedPiece.hasClass("promoted");
-	var isBlack = clickedPiece.hasClass("black");
 	var movableBoard = new bitBoard();
 	movableBoard.setPointer(pos);
 
 	var triCurrentPieces = new triBoard();
-	triCurrentPieces.getCurrentPieces(isBlack);
+	triCurrentPieces.getCurrentPieces(pcClicked.isBlack);
 
 	if(pos == 0){
 		movableBoard.allArea();
@@ -27,31 +24,31 @@ function computeMovable(pos,obj){
 
 		switch(kindOfPiece){
 			case "FU":
-				methods.computeFuDroppable(movableBoard,isBlack); break;
+				methods.computeFuDroppable(movableBoard,pcClicked.isBlack); break;
 			case "KYO":
-				methods.computeKyoDroppable(movableBoard,isBlack); break;
+				methods.computeKyoDroppable(movableBoard,pcClicked.isBlack); break;
 			case "KEI":
-				methods.computeKeiDroppable(movableBoard,isBlack); break;
+				methods.computeKeiDroppable(movableBoard,pcClicked.isBlack); break;
 		}
 	}
-	else if(!isPromoted){
+	else if(!pcClicked.isPromoted){
 		switch(kindOfPiece){
 			case "FU":
-				methods.computeFuMovable(movableBoard,isBlack); break;
+				methods.computeFuMovable(movableBoard,pcClicked.isBlack); break;
 			case "OH":
-				methods.computeOhMovable(movableBoard,isBlack); break;
+				methods.computeOhMovable(movableBoard,pcClicked.isBlack); break;
 			case "KIN":
-				methods.computeKinMovable(movableBoard,isBlack); break;
+				methods.computeKinMovable(movableBoard,pcClicked.isBlack); break;
 			case "GIN":
-				methods.computeGinMovable(movableBoard,isBlack); break;
+				methods.computeGinMovable(movableBoard,pcClicked.isBlack); break;
 			case "KEI":
-				methods.computeKeiMovable(movableBoard,isBlack); break;
+				methods.computeKeiMovable(movableBoard,pcClicked.isBlack); break;
 			case "KYO":
-				methods.computeKyoMovable(movableBoard,isBlack); break;
+				methods.computeKyoMovable(movableBoard,pcClicked.isBlack); break;
 			case "KAKU":
-				methods.computeKakuMovable(movableBoard,isBlack); break;
+				methods.computeKakuMovable(movableBoard,pcClicked.isBlack); break;
 			case "HISHA":
-				methods.computeHishaMovable(movableBoard,isBlack); break;
+				methods.computeHishaMovable(movableBoard,pcClicked.isBlack); break;
 			default:
 				debug("この駒はまだ設定されていません");
 				movableBoard.eachdo(function(pos,value){
@@ -63,17 +60,17 @@ function computeMovable(pos,obj){
 	else{
 		switch(kindOfPiece){
 			case "FU":
-				methods.computeKinMovable(movableBoard,isBlack); break;
+				methods.computeKinMovable(movableBoard,pcClicked.isBlack); break;
 			case "GIN":
-				methods.computeKinMovable(movableBoard,isBlack); break;
+				methods.computeKinMovable(movableBoard,pcClicked.isBlack); break;
 			case "KEI":
-				methods.computeKinMovable(movableBoard,isBlack); break;
+				methods.computeKinMovable(movableBoard,pcClicked.isBlack); break;
 			case "KYO":
-				methods.computeKinMovable(movableBoard,isBlack); break;
+				methods.computeKinMovable(movableBoard,pcClicked.isBlack); break;
 			case "KAKU":
-				methods.computeRyumaMovable(movableBoard,isBlack); break;
+				methods.computeRyumaMovable(movableBoard,pcClicked.isBlack); break;
 			case "HISHA":
-				methods.computeRyuohMovable(movableBoard,isBlack); break;
+				methods.computeRyuohMovable(movableBoard,pcClicked.isBlack); break;
 			default:
 				debug("この駒はまだ設定されていません");
 				movableBoard.eachdo(function(pos,value){
@@ -179,7 +176,7 @@ movableMethods.prototype.computeRyuohMovable = function(targetBoard,isBlack){
 
 movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
 
-	columnsBoard = new bitBoard();
+	var columnsBoard = new bitBoard();
 
 	// 二歩の処理
 	for(var i = 11; i < 100; i++)
@@ -196,9 +193,9 @@ movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
 		}
 	}
 
-	// 先手の場合は一段目、
+	// 先手の場合は一段目、後手の場合は九段目を追加
 
-	rowsBoard = new bitBoard();
+	var rowsBoard = new bitBoard();
 	rowsBoard.addRowArea(isBlackTurn ? 1 : 9)
 
 	//ビッドボードの差を取る
@@ -222,21 +219,25 @@ movableMethods.prototype.computeKyoDroppable = function(targetBoard,isBlack){
 
 // 敵駒の利きを計算する
 function computeEnemyPower(){
-	isComputing = true; // 実行中フラグをたてる
 	var targetBoard = new bitBoard();
 	targetBoard.getEnemyPieces();
+	
+	isComputing = true; // 実行中フラグをたてる
 
-	debug("enemy board is ...");
-	targetBoard.output();
 
-	var resultBoard = new bitBoard();
+	// 敵駒(targetBoard)の駒の利きを全て取得して、enemyPoweredAreaBoardに加算
+	var enemyPoweredAreaBoard = new bitBoard();
 	 targetBoard.eachdo(function(pos,value){
 	 	if(value == 1){
 	 		var CurrentBoard = new computeMovable(pos, getPieceObject(pos));
-	 		resultBoard = resultBoard.marge(CurrentBoard);
+	 		enemyPoweredAreaBoard = enemyPoweredAreaBoard.marge(CurrentBoard);
 	 	}
 	 });
 
-	isComputing = false;
-	return resultBoard;
+	isComputing = false; // 実行中フラグ終了
+
+	return enemyPoweredAreaBoard;
 }
+
+
+

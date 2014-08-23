@@ -38,10 +38,3 @@ function apiStub(callback){$(function(){
 	}).then(function(){ callback("loaded");});
 });}
 
-
-
-
-
-
-
-

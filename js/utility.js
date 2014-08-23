@@ -56,7 +56,6 @@ function getAreaObject(posID){
 	return $(selectAreaID(posID));
 }
 
-
 function isPieceBlack(pos){
 	CurrentPiece = getPieceObject(pos);
 	if(CurrentPiece.hasClass("black"))

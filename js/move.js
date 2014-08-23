@@ -10,27 +10,30 @@ $(function(){
 // 移動、持ち駒処理なども含めて駒を移動する(複合処理)
 function moveDraggablePiece(pos,e,ui,isPromoted){
 	var methods = new moveMethods();
-	var MoveToArea = getAreaObject(pos);
-	var CapturePiece = MoveToArea.children();
-	var parentId = ui.draggable.parent(".piece_area").attr("id");
 
+	// 必要なオブジェクトを取得	
+	var DraggingPiece = ui.draggable;
+	var MoveToArea = getAreaObject(pos);
+	var CapturePiece = MoveToArea.children(".piece");
+
+	// 駒を取る場合の処理
 	if(CapturePiece.length != 0)
 	{
-		// 駒を取る場合の処理
-		methods.appendImage(CapturePiece,isBlackTurn,false);
 		CapturePiece.prependTo(isBlackTurn ? $("#pos_bc") : $("#pos_wc"));
-		CapturePiece.removeClass(isBlackTurn ? "white" : "black");
-		CapturePiece.addClass(isBlackTurn ? "brack" : "white");
+		methods.appendPieceClasses(CapturePiece, isBlackTurn, false);
 	}
-	ui.draggable.prependTo(MoveToArea).css({top:'0',left:'0'});
 
+	// 駒を成る場合の処理
 	if(isPromoted){
-		var isBlack = ui.draggable.hasClass('black');
-		ui.draggable.addClass('promoted')
-		methods.appendImage(ui.draggable, isBlack, true);
+		methods.appendPieceClasses(DraggingPiece,isBlackTurn, true);
 	}
+
+	// 共通処理
+	DraggingPiece.prependTo(MoveToArea).css({top:'0',left:'0'});
 	$(".lastmoved").removeClass("lastmoved");
-	ui.draggable.addClass("lastmoved");
+	DraggingPiece.addClass("lastmoved");
+
+	// 先後を入れ替える
 	isBlackTurn = !isBlackTurn;
 }
 
@@ -99,6 +102,30 @@ function moveAllPieceInDock()
 
 function moveMethods(){}
 
+// 状態クラスをすべて消去する
+moveMethods.prototype.clearPieceClasses = function(pieceObj){
+	if(pieceObj.hasClass("promoted"))
+		pieceObj.removeClass("promoted");
+	if(pieceObj.hasClass("white"))
+		pieceObj.removeClass("white");
+	if(pieceObj.hasClass("black"))
+		pieceObj.removeClass("black");
+}
+
+// 駒の状態を変化させる
+moveMethods.prototype.appendPieceClasses = function(pieceObj, isBlack, isPromoted){
+	this.clearPieceClasses(pieceObj);
+	if(isPromoted)
+		pieceObj.addClass("promoted");
+
+	if(isBlack)
+		pieceObj.addClass("black");
+	else
+		pieceObj.addClass("white");
+
+	this.appendImage(pieceObj, isBlack, isPromoted);
+}
+// 画像を挿入する
 moveMethods.prototype.insertImage = function(posID, kindOfPiece, isReversed, isPromoted){
 	PieceToPut = getPieceObject(posID);
 
@@ -108,6 +135,7 @@ moveMethods.prototype.insertImage = function(posID, kindOfPiece, isReversed, isP
 	PieceToPut.append(imgTag);
 }
 
+// 画像を変更する
 moveMethods.prototype.appendImage = function(pieceObj, isBlack, isPromoted){
 	kindOfPiece = getPieceName(pieceObj);
 	imgID = this.createImageID(kindOfPiece,isBlack, isPromoted);
