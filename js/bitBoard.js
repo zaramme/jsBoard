@@ -39,11 +39,19 @@ bitBoard.prototype.eachdo = function(func){
 	}
 }
 
+bitBoard.prototype.eachdoSelected = function(func){
+	for(var i = 11; i<100; i++)
+	{
+		if(this.board[i] == 1)
+			func(i,this.board[i]);
+	}
+}
+
 bitBoard.prototype.allArea = function(){
 	for(var i = 11; i<100; i++)
 	{
 		this.board[i] = 1;
-	}	
+	}
 }
 
 bitBoard.prototype.getCurrentPieces = function(){

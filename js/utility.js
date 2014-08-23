@@ -11,7 +11,9 @@ $(function(){
 function debug(message)
 {
 	if(IsDebugMode){
-		$("#debug").append(message + "<br>");
+		$(".debugend").removeClass("debugend");
+		$("#debug").append("<div class=\"debugend\">" +message + "</div>");
+		$("#debug").scrollTop($(".debugend").offset().top);
 	}
 }
 
@@ -70,8 +72,8 @@ function isPieceBlack(pos){
 	return null;
 }
 
-// function getPosFromPiece(PieceObj){
-// 	PieceArea = PieceObj.parent();
-
-// 	return pos;
-// }
+ function getPosFromPiece(PieceObj){
+ 	pieceAreaId = PieceObj.parent().attr("id");
+ 	posID = pieceAreaId.substring(4);
+	return posID;
+}

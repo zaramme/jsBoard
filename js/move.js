@@ -8,11 +8,11 @@ $(function(){
 // publicメソッド(prefix:"move")
 
 // 移動、持ち駒処理なども含めて駒を移動する(複合処理)
-function moveDraggablePiece(pos,e,ui,isPromoted){
+function movePiece(pos,PieceToMove,isPromoted){
 	var methods = new moveMethods();
 
-	// 必要なオブジェクトを取得	
-	var DraggingPiece = ui.draggable;
+	// 必要なオブジェクトを取得
+	var DraggingPiece = PieceToMove;
 	var MoveToArea = getAreaObject(pos);
 	var CapturePiece = MoveToArea.children(".piece");
 
@@ -34,7 +34,57 @@ function moveDraggablePiece(pos,e,ui,isPromoted){
 	DraggingPiece.addClass("lastmoved");
 
 	// 先後を入れ替える
-	isBlackTurn = !isBlackTurn;
+}
+
+function wheatherPromotable(fromPos, toPos, pieceToMove){
+	debug("fromPos = " + fromPos);
+	toPosY = toPos % 10
+	fromPosY = fromPos % 10;
+	pcPiece = new pieceConductor(pieceToMove);
+
+	// 成れる位置かどうか
+	isPromotableArea = isBlackTurn ? toPosY <= 3 : 7 <= toPosY;
+	isFromPromotableArea = isBlackTurn ? fromPosY <= 3 : 7 <= fromPosY;
+
+	// 持ち駒から打ったかどうか
+	isFromCaptured = fromPos == "bc" || fromPos == "wc";
+
+	// 一段目、二段目の位置かどうか
+	isEdgeArea = isBlackTurn? toPosY == 1 : toPosY == 9;
+	isSemiEdgeArea = isBlackTurn? toPosY <= 2 : 8 <= toPosY;
+
+	if(isFromCaptured)
+		return false;
+
+	if(isPromotableArea)
+	{
+		// 成れる駒かどうか
+		switch(pcPiece.kindOfPiece)
+		{
+			// 王と金は成れない
+			case "OH": return false; break;
+			case "KIN": return false; break;
+			// 歩、桂、香は場所によって成り確定
+			case "KEI":
+				return isSemiEdgeArea ? true : "select"; break;
+			case "KYO":
+				return isEdgeArea ? true : "select"; break;
+			case "FU":
+				return isEdgeArea ? true : "select"; break;
+			default:
+				return "select"; break;
+		}
+	}
+	else if(isFromPromotableArea)
+		switch(pcPiece.kindOfPiece)
+		{
+			// 王と金は成れない
+			case "OH": return false; break;
+			case "KIN": return false; break;
+			default:
+				return "select";
+	}
+	return false;
 }
 
 // ドックから駒を配置する

@@ -7,6 +7,9 @@ debug("define.jsを読み込みました");
 
 var isBlackTurn = true;
 var isComputing = false;
+var isReserving = false;
+var isOhte = false;
+
 PieceImageCode = new Object();
 PieceImageCode.OH = "OH";
 PieceImageCode.KIN = "KIN";

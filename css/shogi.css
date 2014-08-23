@@ -73,19 +73,38 @@ h1{
 .bg{position: absolute;}
 
 .dock{visibility: hidden;}
+
 #boardimg{
 	left:100px;
+
 }
 #debug{
 	border: 1px dotted #999999;
-	width: 600px;
-	height: 150px;
+	width: 400px;
+	height: 300px;
 	font-size:12px;
 	line-height: 120%;
 	overflow-y : scroll;
 }
 
+#selectbox{
+	position: absolute;
+	visibility: hidden;
+	top: 480px;
+	left: 20px;
+	width: 80px;
+	height: 55px;
+	border: solid 1px #3333FF;
+}
 
+.reserved{
+	visibility: hidden;
+	width: 60px;
+	height: 65px;
+	top:550px;
+	left: 20px;
+	border: solid 1px #FF0000;
+}
 
 
 
