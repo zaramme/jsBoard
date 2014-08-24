@@ -9,10 +9,15 @@ debug("pieceStates.jsを読み込みました");
 function pieceConductor(posIdOrPieceObject){
 	// 駒の座標
 	if(isNaN(posIdOrPieceObject))
+	{
 		this.piece = posIdOrPieceObject;
+		this.pos = getPosFromPiece(posIdOrPieceObject);
+	}
 	else
+	{
 		this.piece = getPieceObject(posIdOrPieceObject);
-
+		this.pos = posIdOrPieceObject;
+	}
 	// 駒の種類
 	this.kindOfPiece = this.getPieceName(this.piece);
 

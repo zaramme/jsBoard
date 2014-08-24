@@ -7,37 +7,71 @@ $(function(){
 //////////////////////////////////////////////////////
 // publicメソッド(prefix:"move")
 
-// 移動、持ち駒処理なども含めて駒を移動する(複合処理)
-function movePiece(pos,PieceToMove,isPromoted){
+// ゲーム上の「着手」として駒の移動処理を行う
+function doMovePiece(pos,PieceToMove,isPromoted)
+{
+	var methods = new moveMethods();
+	var fromPos = getPosFromPiece(PieceToMove);	// 移動前の座標を保持しておく
+	var kindToMove = getPieceName(PieceToMove);
+	var PieceToCapture = getPieceObject(pos);
+
+	// 駒を移動する
+	movePiece(pos, PieceToMove, isBlackTurn, isPromoted)
+
+	if(PieceToCapture.length != 0)
+	{
+		pcToCapture = new pieceConductor(PieceToCapture);
+
+		// 駒を取れる場合の処理
+		CaptureTo = isBlackTurn? "bc":"wc";
+		movePiece(CaptureTo,PieceToCapture, isBlackTurn, false);
+	}
+
+	// 着手後王手になっていないか(王手を外していないor敵ゴマの利きを通す)
+	var isOhteNow = computeIsOhte();
+	if(isOhteNow)
+	{
+		// 王手が継続している場合は着手を無効とする
+		debug("王手がかかっています！");
+		movePiece(fromPos,PieceToMove, isBlackTurn, isPromoted);// 移動前の座標に戻す
+		if(PieceToCapture.length != 0)
+			movePiece(pcToCapture.pos,PieceToCapture,pcToCapture.isBlackTurn,pcToCapture.isPromoted);
+		return false; //着手失敗
+	}
+
+	// 駒を取る判定および処理
+
+	if(isCaptured("fromPos"))
+	{
+		sortCapturedArea("fromPos");
+	}
+	debug("(doMovePiece)isPromoted = " + isPromoted);
+	methods.FinishMove(fromPos,pos,kindToMove,isPromoted);
+	return true; // 着手完了
+}
+
+// プログラム上の処理として駒を移動させる
+function movePiece(toPos,PieceToMove,isBlack, isPromoted){
 	var methods = new moveMethods();
 
 	// 必要なオブジェクトを取得
-	var DraggingPiece = PieceToMove;
-	var MoveToArea = getAreaObject(pos);
+	var fromPos = getPosFromPiece(PieceToMove);
+	var MoveToArea = getAreaObject(toPos);
 	var CapturePiece = MoveToArea.children(".piece");
 
-	// 駒を取る場合の処理
-	if(CapturePiece.length != 0)
-	{
-		CapturePiece.prependTo(isBlackTurn ? $("#pos_bc") : $("#pos_wc"));
-		methods.appendPieceClasses(CapturePiece, isBlackTurn, false);
-	}
-
-	// 駒を成る場合の処理
-	if(isPromoted){
-		methods.appendPieceClasses(DraggingPiece,isBlackTurn, true);
-	}
-
 	// 共通処理
-	DraggingPiece.prependTo(MoveToArea).css({top:'0',left:'0'});
-	$(".lastmoved").removeClass("lastmoved");
-	DraggingPiece.addClass("lastmoved");
+	PieceToMove.prependTo(MoveToArea).css({top:'0',left:'0'});
+	methods.appendPieceClasses(PieceToMove,isBlack, isPromoted);
 
-	// 先後を入れ替える
+	// 駒台を並べ替える
+	if(isCaptured(toPos))
+		methods.sortCapturedArea(toPos);
+	if(isCaptured(fromPos))
+		methods.sortCapturedArea(fromPos);
 }
 
+// 移動後成れるかどうかの判定
 function wheatherPromotable(fromPos, toPos, pieceToMove){
-	debug("fromPos = " + fromPos);
 	toPosY = toPos % 10
 	fromPosY = fromPos % 10;
 	pcPiece = new pieceConductor(pieceToMove);
@@ -52,6 +86,9 @@ function wheatherPromotable(fromPos, toPos, pieceToMove){
 	// 一段目、二段目の位置かどうか
 	isEdgeArea = isBlackTurn? toPosY == 1 : toPosY == 9;
 	isSemiEdgeArea = isBlackTurn? toPosY <= 2 : 8 <= toPosY;
+
+	if(pcPiece.isPromoted)
+		return true;
 
 	if(isFromCaptured)
 		return false;
@@ -91,60 +128,43 @@ function wheatherPromotable(fromPos, toPos, pieceToMove){
 function movePieceFromDock(posID, kindOfPiece, isBlack, isPromoted)
 {
 	var methods = new moveMethods();
-
 	var targetArea = getAreaObject(posID);
-	var nakedPiece = $("#pos_0>.piece:first");
-
-	nakedPiece.prependTo(targetArea);
-	methods.insertImage(posID, kindOfPiece,isBlack,isPromoted);
-
-	nakedPiece.addClass(isBlack ? "black" : "white");
+	var nakedPiece = $("#pos_dock>.piece:first");
 	nakedPiece.addClass(kindOfPiece);
-	if(isPromoted)
-		nakedPiece.addClass("promoted");
+
+	movePiece(posID, nakedPiece, isBlack, isPromoted);
+
 }
 
 // 全ての駒をドックに戻す
 function moveAllPieceInDock()
 {
-	var dock = getAreaObject(0);
+	methods = new moveMethods();
+
+	var dock = getAreaObject("dock");
 	var currentPieces = new bitBoard();
 	currentPieces.getCurrentPieces();
 
- 	$(".lastmoved").removeClass("lastmoved");
+	// debug("クリアピース対象")
+	// currentPieces.output();
 
-	currentPieces.eachdo(function(pos,value){
+	currentPieces.eachdoSelected(function(pos,value){
 		var currentPiece = getPieceObject(pos);
-		currentPiece.prependTo(dock);
-		currentPiece.empty();
-		currentPiece.removeClass("white");
-		currentPiece.removeClass("black");
-		currentPiece.removeClass("promoted");
-		currentPiece.removeClass("OH");
-		currentPiece.removeClass("KIN");
-		currentPiece.removeClass("GIN");
-		currentPiece.removeClass("KEI");
-		currentPiece.removeClass("KYO");
-		currentPiece.removeClass("KAKU");
-		currentPiece.removeClass("HISHA");
-		currentPiece.removeClass("FU");
+		var target = getPieceObject(pos);
+		movePiece("dock", target, false);
+		methods.initPiece(target);
 	})
 
-	getCapturedPieces().each(function(){
-		$(this).prependTo(dock);
-		$(this).empty();
-		$(this).removeClass("white");
-		$(this).removeClass("black");
-		$(this).removeClass("promoted");
-		$(this).removeClass("OH");
-		$(this).removeClass("KIN");
-		$(this).removeClass("GIN");
-		$(this).removeClass("KEI");
-		$(this).removeClass("KYO");
-		$(this).removeClass("KAKU");
-		$(this).removeClass("HISHA");
-		$(this).removeClass("FU");
-	});
+ 	$(".lastmoved").removeClass("lastmoved");
+
+ 	var capturedPieces = getCapturedPieces();
+ 	if(capturedPieces.length != 0)
+ 	{
+		capturedPieces.each(function(){
+			movePiece("dock", $(this), false);
+			methods.initPiece($(this));
+		});
+	}
 }
 
 //////////////////////////////////////////////////////
@@ -154,42 +174,89 @@ function moveMethods(){}
 
 // 状態クラスをすべて消去する
 moveMethods.prototype.clearPieceClasses = function(pieceObj){
-	if(pieceObj.hasClass("promoted"))
-		pieceObj.removeClass("promoted");
-	if(pieceObj.hasClass("white"))
-		pieceObj.removeClass("white");
-	if(pieceObj.hasClass("black"))
-		pieceObj.removeClass("black");
+
+	var funcRemove = function(strClass){
+		if(pieceObj.hasClass(strClass))
+			pieceObj.removeClass(strClass);
+	}
+	funcRemove("white");
+	funcRemove("black");
+	funcRemove("promoted");
 }
 
+moveMethods.prototype.initPiece = function(pieceObj){
+	this.clearPieceClasses(pieceObj);
+	eachKindOfPieceDo(true, function(strClass){
+		if(pieceObj.hasClass(strClass))
+			pieceObj.removeClass(strClass);
+	});
+}
 // 駒の状態を変化させる
 moveMethods.prototype.appendPieceClasses = function(pieceObj, isBlack, isPromoted){
+	kindOfPiece = getPieceName(pieceObj);
+
 	this.clearPieceClasses(pieceObj);
 	if(isPromoted)
 		pieceObj.addClass("promoted");
-
 	if(isBlack)
 		pieceObj.addClass("black");
 	else
 		pieceObj.addClass("white");
-
-	this.appendImage(pieceObj, isBlack, isPromoted);
-}
-// 画像を挿入する
-moveMethods.prototype.insertImage = function(posID, kindOfPiece, isReversed, isPromoted){
-	PieceToPut = getPieceObject(posID);
-
-	imgID = this.createImageID(kindOfPiece, isReversed, isPromoted);
-	imgTag = "<img src=\"./images/koma/"
-			+ imgID +".png\" />";
-	PieceToPut.append(imgTag);
+	this.appendImage(pieceObj, kindOfPiece, isBlack, isPromoted);
 }
 
 // 画像を変更する
-moveMethods.prototype.appendImage = function(pieceObj, isBlack, isPromoted){
-	kindOfPiece = getPieceName(pieceObj);
+moveMethods.prototype.appendImage = function(pieceObj, kindOfPiece, isBlack, isPromoted){
 	imgID = this.createImageID(kindOfPiece,isBlack, isPromoted);
 	pieceObj.children("img").attr("src","./images/koma/"+imgID+".png");
+}
+
+// 駒台のソード、複数枚数処理
+moveMethods.prototype.sortCapturedArea = function(pos)
+{
+	debug("ソートします");
+	capturedArea = $("#pos_" + pos);
+
+	capturedArea.children('.piece').removeClass('forefront');
+	capturedArea.children('.piece').removeClass('omitted');
+	$(".test").remove();
+
+	eachKindOfPieceDo(pos=="bc", function(kindOfPiece){
+		var pieces = capturedArea.children("."+kindOfPiece);
+		var isForefront = true;
+		pieces.each(function()
+		{
+			if(isForefront)
+			{
+				debug("最初の駒です");
+				$(this).addClass('forefront');
+				isForefront = false;
+				return;
+			}
+			debug("二番目以降の駒です");
+			$(this).addClass("omitted");
+		});
+	});
+
+	// 駒の並べ替え
+	eachKindOfPieceDo(!(pos=="bc"), function(kindOfPiece){
+		capturedArea.children("."+kindOfPiece+".forefront").prependTo(capturedArea);
+	})
+
+	// 駒数表示の追加
+	eachKindOfPieceDo(true, function(kindOfPiece){
+		pieces = capturedArea.children("."+kindOfPiece);
+		forefront = capturedArea.children("."+kindOfPiece+".forefront");
+		if(pieces.length > 1)
+			forefront.after("<div class=\"test\"><b>×" +pieces.length +"</b></div>");
+		else
+			forefront.after("<div class=\"test\"></div>");			
+	})
+}
+
+moveMethods.prototype.showTheNextStatusOfCapturedArea = function(whetherBlackOrWhite)
+{
+
 }
 
 // 画像IDを生成する
@@ -220,4 +287,43 @@ moveMethods.prototype.createImageID = function (kindOfPiece,isReversed, isPromot
 		imgID += PieceImageCode.promoted;
 	}
 	return imgID;
+}
+
+// 着手完了手続き
+moveMethods.prototype.FinishMove = function(fromPos,toPos,kindOfPiece,isPromoted)
+{
+	isBlackTurn = !isBlackTurn;
+	isOhte = computeIsOhte();
+
+	$(".lastmoved").removeClass("lastmoved");
+	var target = getAreaObject(toPos)
+	target.addClass("lastmoved");
+
+	$("#selectbox").css("visibility", "hidden");
+	debug("isReserving = " + isReserving);
+
+	moveCode = this.getMovecode(fromPos,toPos,kindOfPiece,isPromoted);
+
+	debug("着手を完了しました。移動コード…"+moveCode);
+
+	if(isBlackTurn)
+		debug("先手の手番です");
+	else
+		debug("後手の手番です");
+	if(isOhte)
+		debug("王手がかかっています");
+}
+
+moveMethods.prototype.getMovecode = function(fromPos,toPos,kindOfPiece,isPromoted)
+{
+	debug("isPromoted= " + isPromoted);
+	var movecode;
+	movecode = toPos;
+	movecode = movecode + kindOfPiece;
+	if(isPromoted)
+		movecode = movecode + "+";
+	if(fromPos=="bc" || fromPos == "wc")
+		fromPos = 0;
+	movecode = movecode + "("+fromPos+")";
+	return movecode;
 }

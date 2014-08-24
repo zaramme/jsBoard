@@ -72,8 +72,41 @@ function isPieceBlack(pos){
 	return null;
 }
 
- function getPosFromPiece(PieceObj){
+function isCaptured(pos){
+	return (pos=="bc" || pos == "wc");
+}
+
+function getPosFromPiece(PieceObj){
  	pieceAreaId = PieceObj.parent().attr("id");
  	posID = pieceAreaId.substring(4);
 	return posID;
+}
+
+// 全ての駒の種類に対して実行
+function eachKindOfPieceDo(isAssending, func){
+
+	if(isAssending)
+	{
+		func("OH");
+		func("HISHA");
+		func("KAKU");
+		func("KIN");
+		func("GIN");
+		func("KEI");
+		func("KYO");
+		func("FU");
+		return;
+	}
+	else
+	{
+		func("FU");
+		func("KYO");
+		func("KEI");
+		func("GIN");
+		func("KIN");
+		func("KAKU");
+		func("HISHA");
+		func("OH");
+		return;		
+	}
 }

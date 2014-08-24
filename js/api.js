@@ -5,36 +5,65 @@ $(function(){
 	debug("api.jsを読み込みました");
 	});
 
-function apiInitBoard(callback){
-	apiStub(callback);
+function apiLoadBoard(callback,filename){
+	var methods = new apiMethods();
+	moveAllPieceInDock();
+	debug("盤面の初期化が完了しました")
+
+	var fileurl = './json/' + filename;
+
+	$.ajax({
+		url: fileurl,
+		dataType: 'json',
+		success: function(data){
+					debug("jsonを取得しました");
+					methods.constructBoardFrom(data);
+		},
+		error: function(){debug("jsonファイルの読み込みに失敗しました filename = ." + fileurl);}
+
+	}).then(function(){ callback("loaded");});
 }
 
-function apiStub(callback){$(function(){
+function apiInitBoard(callback){
+	var methods = new apiMethods();
+
 	moveAllPieceInDock();
 	$.ajax({
 		url: './json/init.json',
 		dataType: 'json',
 		success: function(data){
 			debug("jsonを取得しました");
-			// 手番の取得
-			isBlackTurn = data.isBlackTurn;
-			debug("現在の手番"+ isBlackTurn? "先手":"後手");
-			// data.boardから駒データ一覧を読み込み
-			for(objName in data.board)
-			{
-				// 駒データの取得
-				obj = data.board[objName];
-				posID = obj[0];
-				kindOfPiece = obj[1];
-				isBlack = obj[2];
-				isPromoted = obj[3];
-				// 駒を配置
-				movePieceFromDock(posID,kindOfPiece,isBlack,isPromoted);
-			}
-
-			debug("盤面読み込みが終了しました")
+			methods.constructBoardFrom(data);
 			IsBoardInit =true;
 		}
 	}).then(function(){ callback("loaded");});
-});}
+}
+
+var apiMethods = function(){}
+
+apiMethods.prototype.callApi = function(url){
+
+}
+
+apiMethods.prototype.constructBoardFrom = function(data){
+		// 手番の取得
+		isBlackTurn = data.isBlackTurn;
+		debug("現在の手番" + isBlackTurn);
+		// data.boardから駒データ一覧を読み込み
+		for(objName in data.board)
+		{
+			// 駒データの取得
+			var obj = data.board[objName];
+			var posID = obj[0];
+			var kindOfPiece = obj[1];
+			var isBlack = obj[2];
+			var isPromoted = obj[3];
+
+			// 駒を配置
+			movePieceFromDock(posID,kindOfPiece,isBlack,isPromoted);
+		}
+
+		debug("盤面読み込みが終了しました")
+		IsBoardInit =true;
+}
 

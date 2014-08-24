@@ -16,13 +16,14 @@ function computeMovable(pos,clickedPiece){
 	var triCurrentPieces = new triBoard();
 	triCurrentPieces.getCurrentPieces(isBlackTurn);
 
-	if(pos == 0){
+	if(isCaptured(pos))
+	{
 		movableBoard.allArea();
 		CurrentBoard = new bitBoard();
 		CurrentBoard.getCurrentPieces()
 		movableBoard.minus(CurrentBoard); // 駒の無い場所を取得
 
-		debug("打ち駒の種類 =" + kindOfPiece);
+		//debug("打ち駒の種類 =" + kindOfPiece);
 		switch(kindOfPiece){
 			case "FU":
 				methods.computeFuDroppable(movableBoard,isBlack); break;
@@ -186,11 +187,12 @@ movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
 		var current = getPieceObject(i);
 		if(current.length == 0)
 			continue;
+		var pcCurrent = new pieceConductor(current);
 
 		// 自駒の歩を探索
 		if(getPieceName(current) == "FU" 
-			&& isBlackTurn == isPieceBlack(i)
-			&& !current.hasClass("promoted"))
+		   && isBlackTurn == pcCurrent.isBlack
+		   && !pcCurrent.isPromoted)
 		{
 			// 自駒の歩のある列を追加
 			columnsBoard.addColumnArea(Math.floor(i/10));
@@ -221,15 +223,10 @@ movableMethods.prototype.computeKyoDroppable = function(targetBoard,isBlack){
 }
 
 function computeIsOhte(){
-	debug("王手かどうか計算しています...")
 	OhPiece = isBlackTurn? $(".OH.black") : $(".OH.white")
 	OhPos = getPosFromPiece(OhPiece)
 
-	debug("王の位置…" +OhPos);
-
 	var targetBoard = computeEnemyPower();
-
-	targetBoard.output();
 	return (targetBoard.board[OhPos] == 1);
 
 }
