@@ -9,6 +9,7 @@ var isBlackTurn = true;
 var isComputing = false;
 var isReserving = false;
 var isOhte = false;
+var reservedPos = 0;
 
 PieceImageCode = new Object();
 PieceImageCode.OH = "OH";

@@ -11,7 +11,7 @@
 			[21,"KEI", false, false],
 			[11,"KYO", false, false],
 			[82,"HISHA", false, false],
-			[22,"KAKU", false, false],
+			["bc","KAKU", true, false],
 			[93,"FU", false, false],
 			[83,"FU", false, false],
 			[73,"FU", false, false],
@@ -31,7 +31,7 @@
 			["bc","FU", true, false],
 			["wc","FU", false, false],
 			[88,"KAKU", true, false],
-			[28,"HISHA", true, false],
+			["bc","HISHA", true, false],
 			["bc","KYO", true, false],
 			[89,"KEI", true, false],
 			[79,"GIN", true, false],
@@ -39,7 +39,7 @@
 			[59,"OH", true, false],
 			[49,"KIN", true, false],
 			[39,"GIN", true, false],
-			[29,"KEI", true, false],
+			["bc","KEI", true, false],
 			["wc","KYO", false, false]
 		]
 }

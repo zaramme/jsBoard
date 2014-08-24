@@ -1,3 +1,5 @@
+@charset "utf-8"; /*utf-8の場合*/
+
 h1{
 	font-size: 18px;
 	font-weight: bold;
@@ -37,7 +39,7 @@ h1{
 
 .captured{
 	width : 90px;
-	height: 300px;
+	height: 350px;
 	border: dotted 1px #FF0000;
 }
 
@@ -81,11 +83,11 @@ h1{
 
 .wc{top:30px; left:10px;}
 
-.bc{top:300px; left:700px;}
+.bc{top:250px; left:700px;}
 
 .bg{position: absolute;}
 
-.dock{visibility: visible;}
+.dock{visibility: hidden;}
 
 #boardimg{
 	left:100px;
@@ -121,13 +123,9 @@ h1{
 {
 	visibility:hidden;
 }
+
 .reserved{
 	visibility: hidden;
-	width: 60px;
-	height: 65px;
-	top:550px;
-	left: 20px;
-	border: solid 1px #FF0000;
 }
 
 

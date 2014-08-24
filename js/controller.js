@@ -144,8 +144,11 @@ function ShowReservedView(fromPos, toPos, pieceToMove)
 	isReserving = true;
 	setClickablePieces();
 
+	pieceToMove.addClass("reserved");
+
 	// 移動ゴマをreservedに移動
-	movePiece("reserved", pieceToMove, isBlackTurn, false);
+	// movePiece("reserved", pieceToMove, isBlackTurn, false);
+	//
 
 	// セレクトボックスの可視化とクリック属性の指定
 	$("#selectbox").css("visibility", "visible");
@@ -154,6 +157,7 @@ function ShowReservedView(fromPos, toPos, pieceToMove)
 	$("#selectbox").children(".button").bind('click',function(){
 		var isPromotion = $(this).attr("id") == "promotion";
 		isReserving = false;
+		pieceToMove.removeClass("reserved");
 		if(doMovePiece(toPos, pieceToMove, isPromotion)) //着手する
 		{
 			debug("着手成功");

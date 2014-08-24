@@ -93,6 +93,37 @@ function computeMovable(pos,clickedPiece){
 	return movableBoard;
 }
 
+function computeIsOhte(){
+	OhPiece = isBlackTurn? $(".OH.black") : $(".OH.white")
+	OhPos = getPosFromPiece(OhPiece)
+
+	var targetBoard = computeEnemyPower();
+	return (targetBoard.board[OhPos] == 1);
+
+}
+
+// 敵駒の利きを計算する
+function computeEnemyPower(){
+	var targetBoard = new bitBoard();
+	targetBoard.getEnemyPieces();
+
+	isComputing = true; // 実行中フラグをたてる
+
+
+	// 敵駒(targetBoard)の駒の利きを全て取得して、enemyPoweredAreaBoardに加算
+	var enemyPoweredAreaBoard = new bitBoard();
+	 targetBoard.eachdo(function(pos,value){
+	 	if(value == 1){
+	 		var CurrentBoard = new computeMovable(pos, getPieceObject(pos));
+	 		enemyPoweredAreaBoard = enemyPoweredAreaBoard.marge(CurrentBoard);
+	 	}
+	 });
+
+	isComputing = false; // 実行中フラグ終了
+
+	return enemyPoweredAreaBoard;
+}
+
 function movableMethods(){}
 
 movableMethods.prototype.computeOhMovable = function(targetBoard,isBlack){
@@ -112,7 +143,6 @@ movableMethods.prototype.computeOhMovable = function(targetBoard,isBlack){
 	var enemyPowerBoard = new bitBoard();
 	enemyPowerBoard = computeEnemyPower();
 	targetBoard.minus(enemyPowerBoard);
-
 }
 
 movableMethods.prototype.computeKinMovable = function(targetBoard,isBlack){
@@ -131,10 +161,12 @@ movableMethods.prototype.computeGinMovable = function(targetBoard,isBlack){
 	targetBoard.addArea(-1,-1,isBlack);
 	targetBoard.addArea(1,-1,isBlack);
 }
+
 movableMethods.prototype.computeKeiMovable = function(targetBoard,isBlack){
 	targetBoard.addArea(-1,2,isBlack);
 	targetBoard.addArea(1,2,isBlack);
 }
+
 movableMethods.prototype.computeKyoMovable = function(targetBoard,isBlack){
 	targetBoard.addStraightArea(0,1,isBlack);
 }
@@ -190,7 +222,7 @@ movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
 		var pcCurrent = new pieceConductor(current);
 
 		// 自駒の歩を探索
-		if(getPieceName(current) == "FU" 
+		if(getPieceName(current) == "FU"
 		   && isBlackTurn == pcCurrent.isBlack
 		   && !pcCurrent.isPromoted)
 		{
@@ -220,37 +252,6 @@ movableMethods.prototype.computeKyoDroppable = function(targetBoard,isBlack){
 	rowsBoard = new bitBoard();
 	rowsBoard.addRowArea(isBlackTurn ? 1 : 9);
 	targetBoard.minus(rowsBoard);
-}
-
-function computeIsOhte(){
-	OhPiece = isBlackTurn? $(".OH.black") : $(".OH.white")
-	OhPos = getPosFromPiece(OhPiece)
-
-	var targetBoard = computeEnemyPower();
-	return (targetBoard.board[OhPos] == 1);
-
-}
-
-// 敵駒の利きを計算する
-function computeEnemyPower(){
-	var targetBoard = new bitBoard();
-	targetBoard.getEnemyPieces();
-
-	isComputing = true; // 実行中フラグをたてる
-
-
-	// 敵駒(targetBoard)の駒の利きを全て取得して、enemyPoweredAreaBoardに加算
-	var enemyPoweredAreaBoard = new bitBoard();
-	 targetBoard.eachdo(function(pos,value){
-	 	if(value == 1){
-	 		var CurrentBoard = new computeMovable(pos, getPieceObject(pos));
-	 		enemyPoweredAreaBoard = enemyPoweredAreaBoard.marge(CurrentBoard);
-	 	}
-	 });
-
-	isComputing = false; // 実行中フラグ終了
-
-	return enemyPoweredAreaBoard;
 }
 
 

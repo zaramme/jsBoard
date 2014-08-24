@@ -63,6 +63,7 @@ apiMethods.prototype.constructBoardFrom = function(data){
 			movePieceFromDock(posID,kindOfPiece,isBlack,isPromoted);
 		}
 
+		sortCapturedArea();
 		debug("盤面読み込みが終了しました")
 		IsBoardInit =true;
 }
