@@ -44,7 +44,7 @@ function doMovePiece(pos,PieceToMove,isPromoted){
 	// {
 	// 	sortCapturedArea("fromPos");
 	// }
-	debug("(doMovePiece)isPromoted = " + isPromoted);
+	//debug("(doMovePiece)isPromoted = " + isPromoted);
 	methods.FinishMove(fromPos,pos,kindToMove,isPromoted);
 	return true; // 着手完了
 }
@@ -254,15 +254,14 @@ moveMethods.prototype.appendPieceClasses
 }
 
 // 画像を変更する
-moveMethods.prototype.appendImage
-	= function(pieceObj, kindOfPiece, isBlack, isPromoted){
+moveMethods.prototype.appendImage = function(pieceObj, kindOfPiece, isBlack, isPromoted){
 	imgID = this.createImageID(kindOfPiece,isBlack, isPromoted);
 	pieceObj.children("img").attr("src","./images/koma/"+imgID+".png");
 }
 
 moveMethods.prototype.addPieceCountText = function(target,length){
 	if(length > 1)
-		target.after("<div class=\"test\"><b>×" +length +"</b></div>");
+		target.after("<div class=\"test\"><b>×" +length+ "</b></div>");
 	else
 		target.after("<div class=\"test\"></div>");
 }
@@ -308,7 +307,6 @@ moveMethods.prototype.FinishMove = function(fromPos,toPos,kindOfPiece,isPromoted
 	target.addClass("lastmoved");
 
 	$("#selectbox").css("visibility", "hidden");
-	debug("isReserving = " + isReserving);
 
 	sortCapturedArea();
 
@@ -326,7 +324,6 @@ moveMethods.prototype.FinishMove = function(fromPos,toPos,kindOfPiece,isPromoted
 
 moveMethods.prototype.getMovecode = function(fromPos,toPos,kindOfPiece,isPromoted)
 {
-	debug("isPromoted= " + isPromoted);
 	var movecode;
 	movecode = toPos;
 	movecode = movecode + kindOfPiece;

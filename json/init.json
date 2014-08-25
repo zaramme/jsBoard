@@ -1,6 +1,6 @@
 
 {
-		"isBlackTurn":false,
+		"isBlackTurn":true,
 		"board":[
 			[91,"KYO", false,false],
 			[81,"KEI", false, false],
