@@ -1,4 +1,5 @@
 // 駒の移動可能な座標を計算してビットボードを返すメソッド群
+
 $(function(){
 debug("bitBoard.jsを読み込みました");
 
@@ -8,12 +9,12 @@ function computeMovable(pos,clickedPiece){
 	var methods = new movableMethods();
 
 	var pcClicked = new pieceConductor(clickedPiece);
-	var kindOfPiece = pcClicked.kindOfPiece;
 	var isBlack = pcClicked.isBlack
+
 	var movableBoard = new bitBoard();
 	movableBoard.setPointer(pos);
 
-	var triCurrentPieces = new triBoard();
+	var triCurrentPieces = new triBoard(); // 自駒と敵駒の位置を取得
 	triCurrentPieces.getCurrentPieces(isBlackTurn);
 
 	if(isCaptured(pos))
@@ -24,7 +25,7 @@ function computeMovable(pos,clickedPiece){
 		movableBoard.minus(CurrentBoard); // 駒の無い場所を取得
 
 		//debug("打ち駒の種類 =" + kindOfPiece);
-		switch(kindOfPiece){
+		switch(pcClicked.kindOfPiece){
 			case "FU":
 				methods.computeFuDroppable(movableBoard,isBlack); break;
 			case "KYO":
@@ -34,7 +35,7 @@ function computeMovable(pos,clickedPiece){
 		}
 	}
 	else if(!pcClicked.isPromoted){
-		switch(kindOfPiece){
+		switch(pcClicked.kindOfPiece){
 			case "FU":
 				methods.computeFuMovable(movableBoard,isBlack); break;
 			case "OH":
@@ -60,7 +61,7 @@ function computeMovable(pos,clickedPiece){
 		}
 	}
 	else{
-		switch(kindOfPiece){
+		switch(pcClicked.kindOfPiece){
 			case "FU":
 				methods.computeKinMovable(movableBoard,isBlack); break;
 			case "GIN":
@@ -140,6 +141,7 @@ movableMethods.prototype.computeOhMovable = function(targetBoard,isBlack){
 	// この処理はループ時にキャンセルする
 	if(isComputing)
 		return;
+
 	var enemyPowerBoard = new bitBoard();
 	enemyPowerBoard = computeEnemyPower();
 	targetBoard.minus(enemyPowerBoard);
@@ -232,7 +234,6 @@ movableMethods.prototype.computeFuDroppable = function(targetBoard,isBlack){
 	}
 
 	// 先手の場合は一段目、後手の場合は九段目を追加
-
 	var rowsBoard = new bitBoard();
 	rowsBoard.addRowArea(isBlackTurn ? 1 : 9)
 

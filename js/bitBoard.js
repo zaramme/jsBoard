@@ -1,4 +1,4 @@
-//
+// ビットボード…盤上の座標の組み合わせを表現するクラス
 $(function(){
 debug("bitBoard.jsを読み込みました");
 
@@ -25,7 +25,7 @@ bitBoard.prototype.output = function(){
 	debug(this.board[95] + ", "  + this.board[85] + ", "  + this.board[75] + ", "  + this.board[65] + ", "  + this.board[55] + ", "  + this.board[45] + ", "  + this.board[35] + ", "  + this.board[25] + ", "  + this.board[15])
 	debug(this.board[96] + ", "  + this.board[86] + ", "  + this.board[76] + ", "  + this.board[66] + ", "  + this.board[56] + ", "  + this.board[46] + ", "  + this.board[36] + ", "  + this.board[26] + ", "  + this.board[16])
 	debug(this.board[97] + ", "  + this.board[87] + ", "  + this.board[77] + ", "  + this.board[67] + ", "  + this.board[57] + ", "  + this.board[47] + ", "  + this.board[37] + ", "  + this.board[27] + ", "  + this.board[17])
-	debug(this.board[98] + ", "  + this.board[88] + ", "  + this.board[78] + ", "  + this.board[68] + ", "  + this.board[58] + ", "  + this.board[48] + ", "  + this.board[38] + ", "  + this.board[28] + ", "  + this.board[18])
+debug(this.board[98] + ", "  + this.board[88] + ", "  + this.board[78] + ", "  + this.board[68] + ", "  + this.board[58] + ", "  + this.board[48] + ", "  + this.board[38] + ", "  + this.board[28] + ", "  + this.board[18])
 	debug(this.board[99] + ", "  + this.board[89] + ", "  + this.board[79] + ", "  + this.board[69] + ", "  + this.board[59] + ", "  + this.board[49] + ", "  + this.board[39] + ", "  + this.board[29] + ", "  + this.board[19])
 
 	debug("");

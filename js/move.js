@@ -19,9 +19,8 @@ function doMovePiece(pos,PieceToMove,isPromoted){
 
 	if(PieceToCapture.length != 0)
 	{
-		pcToCapture = new pieceConductor(PieceToCapture);
-
 		// 駒を取れる場合の処理
+		pcToCapture = new pieceConductor(PieceToCapture);
 		CaptureTo = isBlackTurn? "bc":"wc";
 		movePiece(CaptureTo,PieceToCapture, isBlackTurn, false);
 	}
@@ -34,17 +33,10 @@ function doMovePiece(pos,PieceToMove,isPromoted){
 		debug("王手がかかっています！");
 		movePiece(fromPos,PieceToMove, isBlackTurn, isPromoted);// 移動前の座標に戻す
 		if(PieceToCapture.length != 0)
-			movePiece(pcToCapture.pos,PieceToCapture,pcToCapture.isBlackTurn,pcToCapture.isPromoted);
+			movePiece(pcToCapture.pos,PieceToCapture,!isBlackTurn,pcToCapture.isPromoted);
 		return false; //着手失敗
 	}
 
-	// 駒を取る判定および処理
-
-	// if(isCaptured("fromPos"))
-	// {
-	// 	sortCapturedArea("fromPos");
-	// }
-	//debug("(doMovePiece)isPromoted = " + isPromoted);
 	methods.FinishMove(fromPos,pos,kindToMove,isPromoted);
 	return true; // 着手完了
 }
@@ -61,15 +53,9 @@ function movePiece(toPos,PieceToMove,isBlack, isPromoted){
 	// 共通処理
 	PieceToMove.prependTo(MoveToArea).css({top:'0',left:'0'});
 	methods.appendPieceClasses(PieceToMove,isBlack, isPromoted);
-
-	// 駒台を並べ替える
-	// if(isCaptured(toPos))
-	// 	methods.sortCapturedArea(toPos);
-	// if(isCaptured(fromPos))
-	// 	methods.sortCapturedArea(fromPos);
 }
 
-// 駒台のソート、複数枚数処理
+// 駒台の複数枚数処理及び並び替え
 function sortCapturedArea(pos){
 
 	if(pos == null)
@@ -87,6 +73,7 @@ function sortCapturedArea(pos){
 	capturedArea.children('.piece').removeClass('omitted');
 	capturedArea.children(".test").remove();
 
+	// 駒台の駒を整理する
 	eachKindOfPieceDo(pos=="bc", function(kindOfPiece){
 		var pieces = capturedArea.children("."+kindOfPiece);
 		var isForefront = true;
@@ -98,10 +85,11 @@ function sortCapturedArea(pos){
 				isForefront = false;
 				return;
 			}
-			//debug("二番目以降の駒です");
+			// 同じ種類の駒が２種類ある場合は、２枚目以降を表示しない（枚数で表示）
 			$(this).addClass("omitted");
 		});
 	});
+
 	// 駒の並べ替え
 	eachKindOfPieceDo(!(pos=="bc"), function(kindOfPiece){
 		capturedArea.children("."+kindOfPiece+".forefront").prependTo(capturedArea);
@@ -122,22 +110,23 @@ function wheatherPromotable(fromPos, toPos, pieceToMove){
 	pcPiece = new pieceConductor(pieceToMove);
 
 	// 成れる位置かどうか
-	isPromotableArea = isBlackTurn ? toPosY <= 3 : 7 <= toPosY;
-	isFromPromotableArea = isBlackTurn ? fromPosY <= 3 : 7 <= fromPosY;
-
-	// 持ち駒から打ったかどうか
-	isFromCaptured = fromPos == "bc" || fromPos == "wc";
 
 	// 一段目、二段目の位置かどうか
 	isEdgeArea = isBlackTurn? toPosY == 1 : toPosY == 9;
 	isSemiEdgeArea = isBlackTurn? toPosY <= 2 : 8 <= toPosY;
 
+	// 成りごまを動かす場合は必ず成り
 	if(pcPiece.isPromoted)
 		return true;
 
+	// 持ち駒から着手した場合は必ず不成
+	isFromCaptured = (fromPos == "bc" || fromPos == "wc")
 	if(isFromCaptured)
 		return false;
 
+	// 成れる領域に駒を動かした場合
+	isPromotableArea = isBlackTurn ? toPosY <= 3 : 7 <= toPosY;
+	isFromPromotableArea = isBlackTurn ? fromPosY <= 3 : 7 <= fromPosY;
 	if(isPromotableArea)
 	{
 		// 成れる駒かどうか
@@ -166,8 +155,10 @@ function wheatherPromotable(fromPos, toPos, pieceToMove){
 			default:
 				return "select";
 	}
+	// 以上の条件に該当しない場合は全て不成
 	return false;
 }
+
 
 // ドックから駒を配置する
 function movePieceFromDock(posID, kindOfPiece, isBlack, isPromoted){
@@ -185,20 +176,21 @@ function moveAllPieceInDock(){
 	methods = new moveMethods();
 
 	var dock = getAreaObject("dock");
+
+ 	$(".lastmoved").removeClass("lastmoved");
+
+	// 全ての駒の座標をビットボードで取得
 	var currentPieces = new bitBoard();
 	currentPieces.getCurrentPieces();
 
-	// debug("クリアピース対象")
-	// currentPieces.output();
-
 	currentPieces.eachdoSelected(function(pos,value){
+		// 全ての駒をドックに格納
 		var currentPiece = getPieceObject(pos);
 		var target = getPieceObject(pos);
 		movePiece("dock", target, false);
 		methods.initPiece(target);
 	})
 
- 	$(".lastmoved").removeClass("lastmoved");
 
  	var capturedPieces = getCapturedPieces();
  	if(capturedPieces.length != 0)
@@ -222,6 +214,7 @@ moveMethods.prototype.clearPieceClasses = function(pieceObj){
 		if(pieceObj.hasClass(strClass))
 			pieceObj.removeClass(strClass);
 	}
+
 	funcRemove("white");
 	funcRemove("black");
 	funcRemove("promoted");

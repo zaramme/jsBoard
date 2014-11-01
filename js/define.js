@@ -1,4 +1,4 @@
-// 定数を定義するクラス
+// グローバル変数・定数を定義するクラス
 $(function(){
 
 debug("define.jsを読み込みました");
@@ -8,6 +8,7 @@ debug("define.jsを読み込みました");
 var isBlackTurn = true;
 var isComputing = false;
 var isReserving = false;
+var ReservingCount;
 var isOhte = false;
 var reservedPos = 0;
 
@@ -35,8 +36,8 @@ const HISHA = 6;
 const FU = 7;
 
 // 先手後手
-const BLACK = 0;
-const WHITE = 1;
+const BLACK = false;
+const WHITE = false;
 
 // 盤面の状態
 const hasBlackPiece = 0;

@@ -1,20 +1,21 @@
-
 // メインスクリプト /////////////////////////////////////////////
 
 $(function(){
 
-apiInitBoard(setClickablePieces);
+apiInitBoard(refreshClickablePieceSetting);
 
-$("#button1").click(function(){moveAllPieceInDock()});
-
-$("#button2").click(function(){apiInitBoard(setClickablePieces)});
-
-$("#button3").click(function(){apiLoadBoard(setClickablePieces,"test1.json")});
+$("#button1").click(function(){
+	moveAllPieceInDock()
 });
 
-// 選択可能な駒のセット
+$("#button2").click(function(){apiInitBoard(refreshClickablePieceSetting)});
 
-function setClickablePieces(){
+$("#button3").click(function(){apiLoadBoard(refreshClickablePieceSetting,"test1.json")});
+});
+
+
+// 選択可能な駒のセット
+function refreshClickablePieceSetting(){
 	// 既存のドラッグ可能処理をすべて消去
 	$(".draggable").draggable('destroy');
 	$(".draggable").removeClass("draggable");
@@ -57,10 +58,10 @@ function addDraggable(obj, pos){
 // 駒をクリックしたときの処理
 function clickPiece(pos, obj)
 {
-	var Methods = new moveMethods();
 	if(isReserving)
 		return;
 
+	var Methods = new moveMethods();
 	var clickedArea = getAreaObject(pos);
 	var pcClicked = new pieceConductor(obj)
 
@@ -75,12 +76,12 @@ function clickPiece(pos, obj)
 
 	if(pos=="bc" || pos =="wc")
 	{
-		debug("駒台の駒をクリックしました = "+ pcClicked.kindOfPiece + ", " +pcClicked.isBlack + ", " + pcClicked.isPromoted);
+//		debug("駒台の駒をクリックしました = "+ pcClicked.kindOfPiece + ", " +pcClicked.isBlack + ", " + pcClicked.isPromoted);
 		CapturedPieces = clickedArea.children("."+pcClicked.kindOfPiece);
 
 		if(CapturedPieces.length > 1)
 		{
-			debug("ゴーストを表示します");
+//			debug("ゴーストを表示します");
 			ghost = $("#ghost");
 			ghost.removeClass('hidden');
 			var ghostPos = obj.offset();
@@ -105,20 +106,20 @@ function addMovable(toPos)
 			pieceToMove = ui.draggable;
 			fromPos = getPosFromPiece(pieceToMove);
 
-			// 成り駒処理を判定(false=成らない、select=選択可能、ture=常に成る)
+			// 成り駒処理を判定(false=常に成らない、select=選択可能、ture=常に成る)
 			res = wheatherPromotable(fromPos,toPos,pieceToMove);
 			switch(res)
 			{
 				case true:
 					if(doMovePiece(toPos, pieceToMove, true))
-						setClickablePieces();
+						refreshClickablePieceSetting();
 					break;
 				case "select":
 					ShowReservedView(fromPos, toPos, pieceToMove);
 					break;
 				case false:
 					if(doMovePiece(toPos, pieceToMove, false))
-						setClickablePieces();
+						refreshClickablePieceSetting();
 					break;
 				case "error":
 					debug("エラーが発生しました");
@@ -132,7 +133,11 @@ function addMovable(toPos)
 // この画面が表示されている場合は処理をストップする
 function ShowReservedView(fromPos, toPos, pieceToMove)
 {
+	debug("成りセレクトを表示しています");
+	Methods = new moveMethods();
+	pcPiectToMove = new pieceConductor(pieceToMove);
 	targetPos = getAreaObject(toPos);
+	targetPiece = getPieceObject(toPos);
 
 	// 成りセレクトボックスの表示位置を設定
 	selectboxPositionTop = parseInt(targetPos.css("top")) -20;
@@ -142,39 +147,50 @@ function ShowReservedView(fromPos, toPos, pieceToMove)
 
 	// 他のクリック操作を一時的にストップ
 	isReserving = true;
-	setClickablePieces();
+	refreshClickablePieceSetting();
 
-	pieceToMove.addClass("reserved");
+	pieceToMove.addClass("hidden");
+	targetPiece.addClass("hidden");
 
-	// 移動ゴマをreservedに移動
-	// movePiece("reserved", pieceToMove, isBlackTurn, false);
-	//
+	debug("ゴーストを表示します");
+	ghost = $("#ghost");
+	ghost.addClass('virtual');
+	ghost.removeClass('hidden');
+	var ghostPos = targetPos.offset();
+	ghost.offset({top: ghostPos.top, left: ghostPos.left});
+	Methods.appendImage(ghost,pcPiectToMove.kindOfPiece, pcPiectToMove.isBlack, pcPiectToMove.isPromoted);
 
 	// セレクトボックスの可視化とクリック属性の指定
 	$("#selectbox").css("visibility", "visible");
 
-	// 「成り」ボタン
+	// $(".board").bind('click',function(){ 盤上をクリックでキャンセル
+
+	// 成り判定
 	$("#selectbox").children(".button").bind('click',function(){
 		var isPromotion = $(this).attr("id") == "promotion";
 		isReserving = false;
-		pieceToMove.removeClass("reserved");
+		pieceToMove.removeClass("hidden");
+		targetPiece.removeClass("hidden");
+		ghost.addClass('hidden');
 		if(doMovePiece(toPos, pieceToMove, isPromotion)) //着手する
 		{
 			debug("着手成功");
 			// 着手が成功した場合の処理
 			$("#selectbox").children(".button").unbind('click'); //Clickイベントを削除
-			setClickablePieces();
+			refreshClickablePieceSetting();
 		}
 		else
 		{
 			movePiece(fromPos,pieceToMove, isBlackTurn, false);
 			$("#selectbox").children(".button").unbind('click'); //Clickイベントを削除
 			$("#selectbox").css("visibility", "hidden");
-			setClickablePieces();
+			refreshClickablePieceSetting();
 		}
 	});
 }
 
+
+// 駒のドラッグの終了処理
 function endClickPiece(pos){
 	clickedArea = getAreaObject(pos);
 	clickedArea.removeClass("selected");
@@ -183,5 +199,39 @@ function endClickPiece(pos){
 	$(".movable").removeClass("movable");
 
 	// ゴーストをクリア
-	$("#ghost").addClass('hidden');
+	if(!isReserving)
+	{
+		$("#ghost").addClass('hidden');
+		$(".virtual").removeClass('virtual');
+	}
 }
+/*
+
+// // ティッカーウィンドウを表示する
+// function showTicker($content){
+// 	// セレクトボックスの可視化とクリック属性の指定
+// 	$("#selectbox").css("visibility", "visible");
+
+// 	// アニメーションで消える
+// }
+
+// // 一時的に盤面の入力保留を行う。キーには保留する内容を入れる
+// function setBoardReserved($key)
+// {
+// 	//ResevingCount++;
+
+// //	if(Reseving.length > 0)
+// //		isReserving = true;
+// }
+
+// // 特定のキーの盤面の入力保留を解除する
+// function unsetBoardReserved()e
+// {
+// 	//ResevingCount--;
+
+// //	if(Reseving.length > 9)
+// //		isReserving = false;
+// }
+
+
+*/
