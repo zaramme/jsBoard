@@ -8,7 +8,7 @@ $(function(){
 function apiLoadBoard(callback,filename){
 	var methods = new apiMethods();
 	moveAllPieceInDock();
-	debug("盤面の初期化が完了しました")
+	debug("盤面の読み込みが完了しました")
 
 	var fileurl = './json/' + filename;
 
@@ -29,13 +29,32 @@ function apiInitBoard(callback){
 
 	moveAllPieceInDock();
 	$.ajax({
-		url: './json/init.json',
+		url: API_RSH,
 		dataType: 'json',
 		success: function(data){
 			debug("jsonを取得しました");
 			methods.constructBoardFrom(data);
 			IsBoardInit =true;
 		}
+	}).then(function(){ callback("loaded");});
+}
+
+function apiGetRshCode(callback,currentRsh,Movecode){
+	var methods = new apiMethods();
+	moveAllPieceInDock();
+	debug("盤面の初期化が完了しました")
+
+	var fileurl = '/board/' + currentRsh + '/' + Movecode;
+
+	$.ajax({
+		url: fileurl,
+		dataType: 'json',
+		success: function(data){
+					debug("jsonを取得しました");
+					methods.constructBoardFrom(data);
+		},
+		error: function(){debug("jsonファイルの読み込みに失敗しました filename = ." + fileurl);}
+
 	}).then(function(){ callback("loaded");});
 }
 
@@ -47,17 +66,17 @@ apiMethods.prototype.callApi = function(url){
 
 apiMethods.prototype.constructBoardFrom = function(data){
 		// 手番の取得
-		isBlackTurn = data.isBlackTurn;
+		isBlackTurn = data.Turn;
 		debug("現在の手番" + isBlackTurn);
 		// data.boardから駒データ一覧を読み込み
-		for(objName in data.board)
+		for(objName in data.Pieces)
 		{
 			// 駒データの取得
-			var obj = data.board[objName];
-			var posID = obj[0];
-			var kindOfPiece = obj[1];
-			var isBlack = obj[2];
-			var isPromoted = obj[3];
+			var obj = data.Pieces[objName];
+			var posID = obj["Pos"];
+			var kindOfPiece = obj["Kop"];
+			var isBlack = obj["Ply"];
+			var isPromoted = obj["IsPrm"];
 
 			// 駒を配置
 			movePieceFromDock(posID,kindOfPiece,isBlack,isPromoted);

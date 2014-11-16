@@ -249,7 +249,7 @@ moveMethods.prototype.appendPieceClasses
 // 画像を変更する
 moveMethods.prototype.appendImage = function(pieceObj, kindOfPiece, isBlack, isPromoted){
 	imgID = this.createImageID(kindOfPiece,isBlack, isPromoted);
-	pieceObj.children("img").attr("src","./images/koma/"+imgID+".png");
+	pieceObj.children("img").attr("src",IMG_DIR+"/"+imgID+".png");
 }
 
 moveMethods.prototype.addPieceCountText = function(target,length){
@@ -292,6 +292,8 @@ moveMethods.prototype.createImageID = function (kindOfPiece,isReversed, isPromot
 // 着手完了手続き
 moveMethods.prototype.FinishMove = function(fromPos,toPos,kindOfPiece,isPromoted)
 {
+	moveCode = this.getMovecode(fromPos,toPos,kindOfPiece,isPromoted);
+
 	isBlackTurn = !isBlackTurn;
 	isOhte = computeIsOhte();
 
@@ -303,7 +305,6 @@ moveMethods.prototype.FinishMove = function(fromPos,toPos,kindOfPiece,isPromoted
 
 	sortCapturedArea();
 
-	moveCode = this.getMovecode(fromPos,toPos,kindOfPiece,isPromoted);
 	debug("着手を完了しました。移動コード…"+moveCode);
 
 	if(isBlackTurn)
@@ -318,12 +319,16 @@ moveMethods.prototype.FinishMove = function(fromPos,toPos,kindOfPiece,isPromoted
 moveMethods.prototype.getMovecode = function(fromPos,toPos,kindOfPiece,isPromoted)
 {
 	var movecode;
-	movecode = toPos;
+	if(isBlackTurn)
+		movecode = "b"
+	else 
+		movecode = "w"
+	movecode = movecode +toPos;
 	movecode = movecode + kindOfPiece;
-	if(isPromoted)
-		movecode = movecode + "+";
 	if(fromPos=="bc" || fromPos == "wc")
-		fromPos = 0;
-	movecode = movecode + "("+fromPos+")";
+		fromPos = "00";
+	movecode = movecode + "_"+fromPos+"";
+	if(isPromoted)
+		movecode = movecode + "!";
 	return movecode;
 }
